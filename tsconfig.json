@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": false,
+        "target": "es5",
+        "baseUrl": ".",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "sourceMap": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "lib": ["dom", "es6", "es2017"]
+    },
+    "include": ["src/**/*"],
+    "exclude": ["src/**/*.spec.ts", "node_modules/*"],
+}
