@@ -14,7 +14,7 @@ var server = Express();
 var request = require('request');
 var cors = require('cors')
 
-/* Middleware */ 
+/* Middleware */
 
 server.use(Cors());
 server.options('*', Cors());
