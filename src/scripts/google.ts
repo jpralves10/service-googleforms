@@ -65,10 +65,6 @@ function PayloadGoogleFormData(e) {
     SpreadsheetApp.getActiveSpreadsheet().insertColumnsAfter(lastCol +1, (maxCols - lastCol));* /
     
     var payload = {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> Alterações
       "sheet": { 'idSheet': String(idSheet), 'nmSheet': String(nmSheet) },
       "resposta": { 'idResposta': String(email), 'carimbo': String(carimbo) },
       "campoC": { 'idCampo': '1', 'nmColuna': 'CÓDIGO NCM OU HS CODE UTILIZADO ATUALMENTE', 'deCampo': String(campoC) },
@@ -86,28 +82,6 @@ function PayloadGoogleFormData(e) {
       "campoO": { 'idCampo': '13', 'nmColuna': 'DESCRIÇÃO FISCAL - SUGERIDA ', 'deCampo': String(campoO) },
       "campoP": { 'idCampo': '14', 'nmColuna': 'OBSERVAÇÕES', 'deCampo': String(campoP) },
       "campoQ": { 'idCampo': '15', 'nmColuna': 'STATUS DO ITEM', 'deCampo': String(campoQ) }
-<<<<<<< HEAD
-=======
-=======
-        "sheet": { 'idSheet': String(idSheet), 'nmSheet': String(nmSheet) },
-        "resposta": { 'idResposta': String(email), 'carimbo': String(carimbo) },
-        "campoC": { 'idCampo': '1', 'nmColuna': 'CÓDIGO NCM OU HS CODE UTILIZADO ATUALMENTE', 'deCampo': String(campoC) },
-        "campoD": { 'idCampo': '2', 'nmColuna': 'DESCRIÇÃO COMPLETA DA MERCADORIA', 'deCampo': String(campoD) },
-        "campoE": { 'idCampo': '3', 'nmColuna': 'FUNÇÃO DA MERCADORIA', 'deCampo': String(campoE) },
-        "campoF": { 'idCampo': '4', 'nmColuna': 'APLICAÇÃO DA MERCADORIA', 'deCampo': String(campoF) },
-        "campoG": { 'idCampo': '5', 'nmColuna': 'COMPOSIÇÃO DA MERCADORIA', 'deCampo': String(campoG) },
-        "campoH": { 'idCampo': '6', 'nmColuna': '% II', 'deCampo': String(campoH) },
-        "campoI": { 'idCampo': '7', 'nmColuna': '% IPI', 'deCampo': String(campoI) },
-        "campoJ": { 'idCampo': '8', 'nmColuna': '% PIS', 'deCampo': String(campoJ) },
-        "campoK": { 'idCampo': '9', 'nmColuna': '% COFINS', 'deCampo': String(campoK) },
-        "campoL": { 'idCampo': '10', 'nmColuna': 'NVE', 'deCampo': String(campoL) },
-        "campoM": { 'idCampo': '11', 'nmColuna': 'DESTAQUE -TRATAMENTO ADMINISTRATIVO', 'deCampo': String(campoM) },
-        "campoN": { 'idCampo': '12', 'nmColuna': 'NECESSIDADE DE L.I', 'deCampo': String(campoN) },
-        "campoO": { 'idCampo': '13', 'nmColuna': 'DESCRIÇÃO FISCAL - SUGERIDA ', 'deCampo': String(campoO) },
-        "campoP": { 'idCampo': '14', 'nmColuna': 'OBSERVAÇÕES', 'deCampo': String(campoP) },
-        "campoQ": { 'idCampo': '15', 'nmColuna': 'STATUS DO ITEM', 'deCampo': String(campoQ) }
->>>>>>> Alterações
->>>>>>> Alterações
     }* /
     
     //Logger.log(payload);

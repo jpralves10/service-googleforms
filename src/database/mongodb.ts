@@ -2,7 +2,7 @@ import mongo from 'mongodb';
 import { MONGODB_CONNECTIONSTRING } from '../config/credentials';
 
 import { Produto } from '../models/produtos';
-import { Comentario } from '../models/comentario';
+import { Classificacao } from '../models/classificacao';
 
 export const connection = mongo.connect(MONGODB_CONNECTIONSTRING, {
   useNewUrlParser: true
@@ -20,6 +20,6 @@ export const integradosCollection = crawlerDB.then(db =>
     db.collection<Produto>('produtosIntegrados')
 );
 
-export const comentariosCollection = crawlerDB.then(db =>
-    db.collection<Comentario>('comentarios')
+export const classificacaoCollection = crawlerDB.then(db =>
+    db.collection<Classificacao>('classificacao')
 );

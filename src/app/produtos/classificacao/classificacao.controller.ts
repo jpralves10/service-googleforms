@@ -1,61 +1,22 @@
 import { Request, Response } from 'express';
 import { Classificacao } from '../../../models/classificacao';
-import { Comentario } from '../../../models/comentario';
-import {
-    comentario_find,
-    comentario_save
-} from './classificacao.database'
+import * as db from './classificacao.database'
 
 import dadosMock from './classificacao.mock';
 
-var request = require('request');
+//var request = require('request');
 
-export const sheets = async (req: Request, res: Response) => {
+// Classificacao
 
-    /*
-    {
-        _id: any
-        idSheet: string,
-        nmSheet: string,
-        colunas: [{
-            idColuna: string,
-            nmColuna: string 
-        }],
-        respostas: [{
-            idResposta: string,
-            carimbo: string,
-            campos: [{
-                idColuna: string,
-                idCampo: string,
-                deCampo: string
-            }]
-        }]
-        comentarios: [{
-            idComentario: string,
-            idResposta: string,
-            idColuna: string,
-            idCampo: string,
-            status: string;
-            descricao: string;
-        }]
-    }
-    */
+export const saveClassificacao = async (req: Request, res: Response) => {
 
-
-    var campos = [{}];
-
-    //var sheets = req.body;
-    var sheets = dadosMock;
-
-    //console.log("Sheets: ", sheets);
-
-    var classificacao: Classificacao = null;
-
+    var classificacao: Classificacao = new Classificacao();
+    var sheets = dadosMock; //req.body
     var count = 0;
 
     sheets.forEach(sheetLists => {
-        if(count == 0){
 
+        if(count == 0){ //Classificacao
             let contItem = 0;
             sheetLists.forEach(item => {
                 if(contItem == 0){
@@ -65,78 +26,163 @@ export const sheets = async (req: Request, res: Response) => {
                 }
                 contItem++;
             });
-
-        }else if(count == 1){
+        }else if(count == 1){ //Colunas
+            for(var i = 0; i < sheetLists.length; i++){
+                classificacao.colunas.push({
+                    'idColuna': i, 
+                    'nmColuna': sheetLists[i] as string
+                })
+            };
+        }else{ //Respostas
+            let campos:{ idColuna: number, deCampo: string }[] = [];
+            let campo: { idColuna: number, deCampo: string };
+            let idResposta: string = '';
+            let carimbo: string = '';
 
             for(var i = 0; i < sheetLists.length; i++){
-                classificacao.colunas.push({'idColuna': i, 'nmColuna': sheetLists[i] as string})
+                if(i == 0){
+                    carimbo = sheetLists[i] as string;
+                }else if(i == 1){
+                    idResposta = sheetLists[i] as string;
+                }else if(i > 1){
+                    campo = {
+                        'idColuna': classificacao.colunas[i].idColuna as number,
+                        'deCampo': sheetLists[i] as string
+                    }
+                    campos.push(campo);
+                }
             };
-
+            classificacao.respostas.push({
+                'idResposta': idResposta, 
+                'carimbo': carimbo,
+                'campos': campos
+            })
         }
         count++;
     })
 
-    //console.log("Classificacao: ", classificacao);
-
-    /*var classificacao: Classificacao = {
-
-        idSheet: sheets.sheet.idSheet,
-        nmSheet: sheets.sheet.nmSheet,
-    }*/
-
-
-    //console.log(classificacao); //body
-
-    res.sendStatus(200)
-}
-
-export const classificacaoSave = async (req: Request, res: Response) => {
-
-    let comentario: Comentario = {
-        codigoFormulario: '123',
-        codigoCampo: '001',
-        carimboDataHora: '2019-04-18T19:03:54.000Z',
-        emailUser: 'jean@eficilog.com',
-        status: 'Pendente',
-        descricao: 'Descrição da Mercadoria teste'
-    }
-
-    comentario_save(comentario);
-
-    console.log(req.body); //body
-
-    res.sendStatus(200)
-}
-
-export const comentarioFind = async (req: Request, res: Response) => {
-
-    let foundComentario;
-    
-    comentario_find().then((comentarios) => {
-        comentarios.forEach(comentario => {
-            console.log(comentario)
-        })
+    db.classificacaoFindByIdSheet(classificacao.idSheet).then((classificacoes) => {
+        if(classificacoes.length <= 0){
+            db.classificacaoSave(classificacao);
+        }else{
+            db.classificacaoUpdate(classificacao);
+        }
     }).catch(function(e) {
         console.log(e);
     })
 
+    //console.log("Classificacao: ", classificacao);
+
     res.sendStatus(200)
 }
 
-export const comentarioSave = async (req: Request, res: Response) => {
+// Colunas
 
-    let comentario: Comentario = {
-        codigoFormulario: '123',
-        codigoCampo: '001',
-        carimboDataHora: '2019-04-18T19:03:54.000Z',
-        emailUser: 'jean@eficilog.com',
+export const obterColunas = async (req: Request, res: Response) => {
+
+    let parametros = {
+        idSheet: 1997890537
+    };
+
+    db.classificacaoFindByIdSheet(parametros.idSheet).then((classificacoes) => {
+        if(classificacoes.length > 0){
+            classificacoes.forEach(classificacao => {
+                if(classificacao.colunas.length > 0){
+                    res.send(classificacao.colunas);
+                }
+                else{
+                    res.send([]);
+                }
+            })
+        }
+    })
+}
+
+// Comentario
+
+export const obterComentario = async (req: Request, res: Response) => {
+
+    let parametros = {
+        idSheet: 1997890537,
+        idResposta: 'jean@eficilog.com'
+    };
+
+    let comentarios = [];
+
+    db.classificacaoFindByIdSheet(parametros.idSheet).then((classificacoes) => {
+        if(classificacoes.length > 0){
+            classificacoes.forEach(classificacao => {
+                if(classificacao.comentarios.length > 0){
+                    classificacao.comentarios.forEach(dbcomentario => {
+                        if(dbcomentario.idResposta == parametros.idResposta){
+                            comentarios.push(dbcomentario)
+                        }
+                    })
+                    res.send(comentarios)
+                }
+                else{
+                    res.send([])
+                }
+            })
+        }
+    })
+}
+
+export const salvarComentario = async (req: Request, res: Response) => {
+
+    let comentarios = [{
+        idSheet: 1997890537,
+        idComentario: null,
+        idResposta: 'jean@eficilog.com',
+        idColuna: 3,
+        descricao: "Teste do caompo: 'Mercadoria completa'",
         status: 'Pendente',
-        descricao: 'Descrição da Mercadoria teste'
-    }
+        dataCriacao: new Date(),
+        dataAtualizacao: new Date()
+    }]
 
-    comentario_save(comentario);
+    comentarios.forEach(comentario => {
+        db.classificacaoFindByIdSheet(comentario.idSheet).then((classificacoes) => {
+            if(classificacoes.length > 0){
+                classificacoes.forEach(classificacao => {
+                    if(classificacao.comentarios.length > 0){
+                        let flcomentario = false;
+    
+                        let idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map((maxCom) => { 
+                            return maxCom.idComentario; 
+                        }))
+    
+                        classificacao.comentarios.forEach(dbcomentario => {
+                            if(dbcomentario.idComentario == comentario.idComentario &&
+                               dbcomentario.idResposta == comentario.idResposta &&
+                               dbcomentario.idColuna == comentario.idColuna){
+    
+                                dbcomentario.descricao = comentario.descricao;
+                                dbcomentario.status = comentario.status;
+                                dbcomentario.dataAtualizacao = new Date();
+                                flcomentario = true;
+                            }
+                        })
+                        if(flcomentario){
+                            db.classificacaoUpdate(classificacao);
+                        }else{
+                            comentario.idComentario = ++idComentarioMax;
+                            classificacao.comentarios.push(comentario);
+                            db.classificacaoUpdate(classificacao);
+                        }
+                    }else{
+                        comentario.idComentario = 0;
+                        classificacao.comentarios.push(comentario);
+                        db.classificacaoUpdate(classificacao);
+                    }
+                })
+            }
+        }).catch(function(e) {
+            console.log(e);
+        })
+    })
 
-    console.log(req.body); //body
+    //console.log(req.body); //body
 
     res.sendStatus(200)
 }

@@ -16,6 +16,6 @@ exports.produtosCollection = exports.crawlerDB.then(function (db) {
 exports.integradosCollection = exports.crawlerDB.then(function (db) {
     return db.collection('produtosIntegrados');
 });
-exports.comentariosCollection = exports.crawlerDB.then(function (db) {
-    return db.collection('comentarios');
+exports.classificacaoCollection = exports.crawlerDB.then(function (db) {
+    return db.collection('classificacao');
 });

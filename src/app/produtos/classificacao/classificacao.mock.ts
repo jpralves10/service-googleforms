@@ -42,7 +42,7 @@ export default
         'Produto de teste',
         'Concluído' 
     ],
-    [ 
+    [
         '2019-05-17T20:01:09.325Z',
         'jean@eficilog.com',
         987654321,

@@ -1,21 +1,37 @@
 import { ObjectId } from 'bson';
 import {
-    comentariosCollection
+    classificacaoCollection
 } from '../../../database/mongodb';
 
-import { Comentario } from '../../../models/comentario';
+import { Classificacao } from '../../../models/classificacao';
 
-export const comentario_find = async () => {
-    const col = await comentariosCollection;
-    return await col.find({ _id: new ObjectId("5cddce5c459c4032445d1307") }).toArray();
+// Classificacao
+
+export const classificacaoFindByIdSheet = async (idSheet:number) => {
+    const col = await classificacaoCollection;
+    return await col.find({idSheet: idSheet}).toArray();
 }
 
-export const comentario_save = async (comentario:Comentario) => {
-    const col = await comentariosCollection;
-    await col.insertOne(comentario).then(() => {
-        return 'Ok';
+export const classificacaoSave = async (classificacao:Classificacao) => {
+    const col = await classificacaoCollection;
+    await col.insertOne(classificacao).then(() => {
+        return true;
     }).catch(function(e) {
         console.log(e);
-        return 'Error'
+        return false
+    });
+}
+
+export const classificacaoUpdate = async (classificacao:Classificacao) => {
+    const col = await classificacaoCollection;
+
+    var query = {idSheet: classificacao.idSheet};
+    var newClassificacao = {$set: classificacao};
+
+    await col.updateOne(query, newClassificacao).then(() => {
+        return true;
+    }).catch(function(e) {
+        console.log(e);
+        return false
     });
 }

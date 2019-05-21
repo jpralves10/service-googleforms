@@ -34,23 +34,31 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var classificacao_database_1 = require("./classificacao.database");
+var classificacao_1 = require("../../../models/classificacao");
+var db = __importStar(require("./classificacao.database"));
 var classificacao_mock_1 = __importDefault(require("./classificacao.mock"));
-var request = require('request');
-exports.sheets = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var campos, sheets, classificacao, count;
+//var request = require('request');
+// Classificacao
+exports.saveClassificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var classificacao, sheets, count;
     return __generator(this, function (_a) {
-        campos = [{}];
+        classificacao = new classificacao_1.Classificacao();
         sheets = classificacao_mock_1.default;
-        classificacao = null;
         count = 0;
         sheets.forEach(function (sheetLists) {
-            if (count == 0) {
+            if (count == 0) { //Classificacao
                 var contItem_1 = 0;
                 sheetLists.forEach(function (item) {
                     if (contItem_1 == 0) {
@@ -62,69 +70,163 @@ exports.sheets = function (req, res) { return __awaiter(_this, void 0, void 0, f
                     contItem_1++;
                 });
             }
-            else if (count == 1) {
+            else if (count == 1) { //Colunas
                 for (var i = 0; i < sheetLists.length; i++) {
-                    classificacao.colunas.push({ 'idColuna': i, 'nmColuna': sheetLists[i] });
+                    classificacao.colunas.push({
+                        'idColuna': i,
+                        'nmColuna': sheetLists[i]
+                    });
                 }
                 ;
             }
+            else { //Respostas
+                var campos = [];
+                var campo = void 0;
+                var idResposta = '';
+                var carimbo = '';
+                for (var i = 0; i < sheetLists.length; i++) {
+                    if (i == 0) {
+                        carimbo = sheetLists[i];
+                    }
+                    else if (i == 1) {
+                        idResposta = sheetLists[i];
+                    }
+                    else if (i > 1) {
+                        campo = {
+                            'idColuna': classificacao.colunas[i].idColuna,
+                            'deCampo': sheetLists[i]
+                        };
+                        campos.push(campo);
+                    }
+                }
+                ;
+                classificacao.respostas.push({
+                    'idResposta': idResposta,
+                    'carimbo': carimbo,
+                    'campos': campos
+                });
+            }
             count++;
         });
-        //console.log("Classificacao: ", classificacao);
-        /*var classificacao: Classificacao = {
-    
-            idSheet: sheets.sheet.idSheet,
-            nmSheet: sheets.sheet.nmSheet,
-        }*/
-        //console.log(classificacao); //body
-        res.sendStatus(200);
-        return [2 /*return*/];
-    });
-}); };
-exports.classificacaoSave = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var comentario;
-    return __generator(this, function (_a) {
-        comentario = {
-            codigoFormulario: '123',
-            codigoCampo: '001',
-            carimboDataHora: '2019-04-18T19:03:54.000Z',
-            emailUser: 'jean@eficilog.com',
-            status: 'Pendente',
-            descricao: 'Descrição da Mercadoria teste'
-        };
-        classificacao_database_1.comentario_save(comentario);
-        console.log(req.body); //body
-        res.sendStatus(200);
-        return [2 /*return*/];
-    });
-}); };
-exports.comentarioFind = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var foundComentario;
-    return __generator(this, function (_a) {
-        classificacao_database_1.comentario_find().then(function (comentarios) {
-            comentarios.forEach(function (comentario) {
-                console.log(comentario);
-            });
+        db.classificacaoFindByIdSheet(classificacao.idSheet).then(function (classificacoes) {
+            if (classificacoes.length <= 0) {
+                db.classificacaoSave(classificacao);
+            }
+            else {
+                db.classificacaoUpdate(classificacao);
+            }
         }).catch(function (e) {
             console.log(e);
         });
+        //console.log("Classificacao: ", classificacao);
         res.sendStatus(200);
         return [2 /*return*/];
     });
 }); };
-exports.comentarioSave = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var comentario;
+// Colunas
+exports.obterColunas = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var parametros;
     return __generator(this, function (_a) {
-        comentario = {
-            codigoFormulario: '123',
-            codigoCampo: '001',
-            carimboDataHora: '2019-04-18T19:03:54.000Z',
-            emailUser: 'jean@eficilog.com',
-            status: 'Pendente',
-            descricao: 'Descrição da Mercadoria teste'
+        parametros = {
+            idSheet: 1997890537
         };
-        classificacao_database_1.comentario_save(comentario);
-        console.log(req.body); //body
+        db.classificacaoFindByIdSheet(parametros.idSheet).then(function (classificacoes) {
+            if (classificacoes.length > 0) {
+                classificacoes.forEach(function (classificacao) {
+                    if (classificacao.colunas.length > 0) {
+                        res.send(classificacao.colunas);
+                    }
+                    else {
+                        res.send([]);
+                    }
+                });
+            }
+        });
+        return [2 /*return*/];
+    });
+}); };
+// Comentario
+exports.obterComentario = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var parametros, comentarios;
+    return __generator(this, function (_a) {
+        parametros = {
+            idSheet: 1997890537,
+            idResposta: 'jean@eficilog.com'
+        };
+        comentarios = [];
+        db.classificacaoFindByIdSheet(parametros.idSheet).then(function (classificacoes) {
+            if (classificacoes.length > 0) {
+                classificacoes.forEach(function (classificacao) {
+                    if (classificacao.comentarios.length > 0) {
+                        classificacao.comentarios.forEach(function (dbcomentario) {
+                            if (dbcomentario.idResposta == parametros.idResposta) {
+                                comentarios.push(dbcomentario);
+                            }
+                        });
+                        res.send(comentarios);
+                    }
+                    else {
+                        res.send([]);
+                    }
+                });
+            }
+        });
+        return [2 /*return*/];
+    });
+}); };
+exports.salvarComentario = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var comentarios;
+    return __generator(this, function (_a) {
+        comentarios = [{
+                idSheet: 1997890537,
+                idComentario: null,
+                idResposta: 'jean@eficilog.com',
+                idColuna: 3,
+                descricao: "Teste do caompo: 'Mercadoria completa'",
+                status: 'Pendente',
+                dataCriacao: new Date(),
+                dataAtualizacao: new Date()
+            }];
+        comentarios.forEach(function (comentario) {
+            db.classificacaoFindByIdSheet(comentario.idSheet).then(function (classificacoes) {
+                if (classificacoes.length > 0) {
+                    classificacoes.forEach(function (classificacao) {
+                        if (classificacao.comentarios.length > 0) {
+                            var flcomentario_1 = false;
+                            var idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map(function (maxCom) {
+                                return maxCom.idComentario;
+                            }));
+                            classificacao.comentarios.forEach(function (dbcomentario) {
+                                if (dbcomentario.idComentario == comentario.idComentario &&
+                                    dbcomentario.idResposta == comentario.idResposta &&
+                                    dbcomentario.idColuna == comentario.idColuna) {
+                                    dbcomentario.descricao = comentario.descricao;
+                                    dbcomentario.status = comentario.status;
+                                    dbcomentario.dataAtualizacao = new Date();
+                                    flcomentario_1 = true;
+                                }
+                            });
+                            if (flcomentario_1) {
+                                db.classificacaoUpdate(classificacao);
+                            }
+                            else {
+                                comentario.idComentario = ++idComentarioMax;
+                                classificacao.comentarios.push(comentario);
+                                db.classificacaoUpdate(classificacao);
+                            }
+                        }
+                        else {
+                            comentario.idComentario = 0;
+                            classificacao.comentarios.push(comentario);
+                            db.classificacaoUpdate(classificacao);
+                        }
+                    });
+                }
+            }).catch(function (e) {
+                console.log(e);
+            });
+        });
+        //console.log(req.body); //body
         res.sendStatus(200);
         return [2 /*return*/];
     });

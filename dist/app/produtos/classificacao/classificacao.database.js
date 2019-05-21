@@ -36,32 +36,53 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var bson_1 = require("bson");
 var mongodb_1 = require("../../../database/mongodb");
-exports.comentario_find = function () { return __awaiter(_this, void 0, void 0, function () {
+// Classificacao
+exports.classificacaoFindByIdSheet = function (idSheet) { return __awaiter(_this, void 0, void 0, function () {
     var col;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.comentariosCollection];
+            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
             case 1:
                 col = _a.sent();
-                return [4 /*yield*/, col.find({ _id: new bson_1.ObjectId("5cddce5c459c4032445d1307") }).toArray()];
+                return [4 /*yield*/, col.find({ idSheet: idSheet }).toArray()];
             case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
-exports.comentario_save = function (comentario) { return __awaiter(_this, void 0, void 0, function () {
+exports.classificacaoSave = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
     var col;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.comentariosCollection];
+            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
             case 1:
                 col = _a.sent();
-                return [4 /*yield*/, col.insertOne(comentario).then(function () {
-                        return 'Ok';
+                return [4 /*yield*/, col.insertOne(classificacao).then(function () {
+                        return true;
                     }).catch(function (e) {
                         console.log(e);
-                        return 'Error';
+                        return false;
+                    })];
+            case 2:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.classificacaoUpdate = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
+    var col, query, newClassificacao;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
+            case 1:
+                col = _a.sent();
+                query = { idSheet: classificacao.idSheet };
+                newClassificacao = { $set: classificacao };
+                return [4 /*yield*/, col.updateOne(query, newClassificacao).then(function () {
+                        return true;
+                    }).catch(function (e) {
+                        console.log(e);
+                        return false;
                     })];
             case 2:
                 _a.sent();
