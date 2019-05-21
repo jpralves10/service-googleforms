@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Classificacao } from '../../../models/classificacao';
+import { Classificacao, IClassificacao } from '../../../models/classificacao';
 import * as db from './classificacao.database'
 
 import dadosMock from './classificacao.mock';
@@ -8,7 +8,7 @@ import dadosMock from './classificacao.mock';
 
 // Classificacao
 
-export const saveClassificacao = async (req: Request, res: Response) => {
+export const setClassificacao = async (req: Request, res: Response) => {
 
     var classificacao: Classificacao = new Classificacao();
     var sheets = dadosMock; //req.body
@@ -76,13 +76,31 @@ export const saveClassificacao = async (req: Request, res: Response) => {
     res.sendStatus(200)
 }
 
+export const getClassificacao = async (req: Request, res: Response) => {
+
+    let classificacao: IClassificacao = req.body;
+
+    db.classificacaoFindByIdSheet(classificacao.idSheet).then((classificacoes) => {
+        if(classificacoes.length > 0){
+            res.send(classificacoes)
+        }else{
+            res.send([])
+        }
+    }).catch(function(e) {
+        console.log(e);
+    })
+}
+
 // Colunas
 
-export const obterColunas = async (req: Request, res: Response) => {
+export const getColunas = async (req: Request, res: Response) => {
 
-    let parametros = {
+    /*let parametros = {
         idSheet: 1997890537
-    };
+    };*/
+
+    let parametros = req.body
+    console.log(parametros)
 
     db.classificacaoFindByIdSheet(parametros.idSheet).then((classificacoes) => {
         if(classificacoes.length > 0){
@@ -94,13 +112,15 @@ export const obterColunas = async (req: Request, res: Response) => {
                     res.send([]);
                 }
             })
+        }else{
+            res.send([]);
         }
     })
 }
 
 // Comentario
 
-export const obterComentario = async (req: Request, res: Response) => {
+export const getComentarios = async (req: Request, res: Response) => {
 
     let parametros = {
         idSheet: 1997890537,
@@ -128,18 +148,21 @@ export const obterComentario = async (req: Request, res: Response) => {
     })
 }
 
-export const salvarComentario = async (req: Request, res: Response) => {
+export const setComentarios = async (req: Request, res: Response) => {
 
-    let comentarios = [{
+    /*let comentarios = [{
         idSheet: 1997890537,
         idComentario: null,
         idResposta: 'jean@eficilog.com',
         idColuna: 3,
+        idUsuario: 'jean@eficilog.com',
         descricao: "Teste do caompo: 'Mercadoria completa'",
         status: 'Pendente',
         dataCriacao: new Date(),
         dataAtualizacao: new Date()
-    }]
+    }]*/
+
+    let comentarios = req.body;
 
     comentarios.forEach(comentario => {
         db.classificacaoFindByIdSheet(comentario.idSheet).then((classificacoes) => {
@@ -175,7 +198,10 @@ export const salvarComentario = async (req: Request, res: Response) => {
                         classificacao.comentarios.push(comentario);
                         db.classificacaoUpdate(classificacao);
                     }
+                    res.send(classificacao);
                 })
+            }else{
+                res.send([]);
             }
         }).catch(function(e) {
             console.log(e);

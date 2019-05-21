@@ -12,10 +12,10 @@ var CatalogoController = __importStar(require("./catalogo/catalogo.controller"))
 var ClassificacaoController = __importStar(require("./classificacao/classificacao.controller"));
 var router = express_1.Router();
 router.post('/filtro/catalogo', CatalogoController.filtro);
-router.get('/comentario/find', ClassificacaoController.obterComentario);
-router.get('/comentario/save', ClassificacaoController.salvarComentario);
-router.get('/classificacao/colunas', ClassificacaoController.obterColunas);
-router.get('/classificacao/save', ClassificacaoController.saveClassificacao);
+router.get('/comentario/find', ClassificacaoController.getComentarios);
+router.post('/comentario/save', ClassificacaoController.setComentarios);
+router.post('/classificacao/find', ClassificacaoController.getClassificacao);
+router.get('/classificacao/save', ClassificacaoController.setClassificacao);
 /*router.post('/alterar', CatalogoController.alterar);
 router.get('/extrato', CatalogoController.extrato);*/
 exports.default = router;

@@ -51,7 +51,7 @@ var db = __importStar(require("./classificacao.database"));
 var classificacao_mock_1 = __importDefault(require("./classificacao.mock"));
 //var request = require('request');
 // Classificacao
-exports.saveClassificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var classificacao, sheets, count;
     return __generator(this, function (_a) {
         classificacao = new classificacao_1.Classificacao();
@@ -123,13 +123,29 @@ exports.saveClassificacao = function (req, res) { return __awaiter(_this, void 0
         return [2 /*return*/];
     });
 }); };
+exports.getClassificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var classificacao;
+    return __generator(this, function (_a) {
+        classificacao = req.body;
+        db.classificacaoFindByIdSheet(classificacao.idSheet).then(function (classificacoes) {
+            if (classificacoes.length > 0) {
+                res.send(classificacoes);
+            }
+            else {
+                res.send([]);
+            }
+        }).catch(function (e) {
+            console.log(e);
+        });
+        return [2 /*return*/];
+    });
+}); };
 // Colunas
-exports.obterColunas = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+exports.getColunas = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var parametros;
     return __generator(this, function (_a) {
-        parametros = {
-            idSheet: 1997890537
-        };
+        parametros = req.body;
+        console.log(parametros);
         db.classificacaoFindByIdSheet(parametros.idSheet).then(function (classificacoes) {
             if (classificacoes.length > 0) {
                 classificacoes.forEach(function (classificacao) {
@@ -141,12 +157,15 @@ exports.obterColunas = function (req, res) { return __awaiter(_this, void 0, voi
                     }
                 });
             }
+            else {
+                res.send([]);
+            }
         });
         return [2 /*return*/];
     });
 }); };
 // Comentario
-exports.obterComentario = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+exports.getComentarios = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var parametros, comentarios;
     return __generator(this, function (_a) {
         parametros = {
@@ -174,19 +193,10 @@ exports.obterComentario = function (req, res) { return __awaiter(_this, void 0, 
         return [2 /*return*/];
     });
 }); };
-exports.salvarComentario = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+exports.setComentarios = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var comentarios;
     return __generator(this, function (_a) {
-        comentarios = [{
-                idSheet: 1997890537,
-                idComentario: null,
-                idResposta: 'jean@eficilog.com',
-                idColuna: 3,
-                descricao: "Teste do caompo: 'Mercadoria completa'",
-                status: 'Pendente',
-                dataCriacao: new Date(),
-                dataAtualizacao: new Date()
-            }];
+        comentarios = req.body;
         comentarios.forEach(function (comentario) {
             db.classificacaoFindByIdSheet(comentario.idSheet).then(function (classificacoes) {
                 if (classificacoes.length > 0) {
@@ -220,7 +230,11 @@ exports.salvarComentario = function (req, res) { return __awaiter(_this, void 0,
                             classificacao.comentarios.push(comentario);
                             db.classificacaoUpdate(classificacao);
                         }
+                        res.send(classificacao);
                     });
+                }
+                else {
+                    res.send([]);
                 }
             }).catch(function (e) {
                 console.log(e);
