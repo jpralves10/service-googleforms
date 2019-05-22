@@ -5,6 +5,7 @@ export interface IClassificacao {
     nmSheet: string,
     colunas: {
         idColuna: number,
+        sequencia: number,
         nmColuna: string 
     }[],
     respostas: {
@@ -21,6 +22,7 @@ export interface IClassificacao {
         idResposta: string,
         idColuna: number,
         idUsuario: string,
+        nmUsuario: string,
         status: string,
         descricao: string,
         dataCriacao: Date,
@@ -35,6 +37,7 @@ export class Classificacao implements IClassificacao {
     nmSheet = '';
     colunas: {
         idColuna: number,
+        sequencia: number,
         nmColuna: string 
     }[] = [];
     respostas: {
@@ -51,6 +54,7 @@ export class Classificacao implements IClassificacao {
         idResposta: string,
         idColuna: number,
         idUsuario: string,
+        nmUsuario: string,
         status: string,
         descricao: string,
         dataCriacao: Date,

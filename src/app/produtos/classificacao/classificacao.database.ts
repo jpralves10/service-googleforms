@@ -3,13 +3,13 @@ import {
     classificacaoCollection
 } from '../../../database/mongodb';
 
-import { Classificacao } from '../../../models/classificacao';
+import { Classificacao, IClassificacao } from '../../../models/classificacao';
 
 // Classificacao
 
 export const classificacaoFindByIdSheet = async (idSheet:number) => {
     const col = await classificacaoCollection;
-    return await col.find({idSheet: idSheet}).toArray();
+    return await col.find({idSheet: idSheet}).toArray() as IClassificacao[];
 }
 
 export const classificacaoSave = async (classificacao:Classificacao) => {
