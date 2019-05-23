@@ -10,166 +10,92 @@ import dadosMock from './classificacao.mock';
 
 export const setClassificacao = async (req: Request, res: Response) => {
 
-    var classificacao: Classificacao = new Classificacao();
     var sheets = dadosMock; //req.body
     var count = 0;
 
-    if(sheets.length > 0){
-        db.classificacaoFindByIdSheet(sheets[0][0] as number).then((dbclassificacoes) => {
-            if(dbclassificacoes.length > 0){
-                dbclassificacoes.forEach(dbclassificacao => {
-    
-                    sheets.forEach(sheetLists => {
-    
-                        if(count == 0){ //Classificacao
-                            sheetLists.forEach((item, index) => {
-                                if(index == 1){
-                                    dbclassificacao.nmSheet = item as string;
-                                }
-                            });
-                        }else if(count == 1){ //Colunas 
+    var header: any = [];
+    var colunas: any = [];
+    var respostas: any = [];
 
-                            sheetLists.forEach((item, index) => { //Novas
-                                let flColuna = false;
-                                dbclassificacao.colunas.forEach(dbcoluna => {
-                                    if(item == dbcoluna.nmColuna){
-                                        flColuna = true;
-                                    }
-                                })
-                                if(!flColuna){
-                                    let idColunaMax = Math.max.apply(Math, dbclassificacao.colunas.map((maxCol) => { 
-                                        return maxCol.idColuna; 
-                                    }))
-                                    dbclassificacao.colunas.push({
-                                        'idColuna': ++idColunaMax,
-                                        'sequencia': index,
-                                        'nmColuna': item as string
-                                    })
-                                }
-                            })
-
-                            dbclassificacao.colunas.forEach(dbcoluna => { //Existentes
-                                let flColuna = false;
-                                let sequencia = -1;
-                                sheetLists.forEach((item, index) => {
-                                    if(item == dbcoluna.nmColuna){
-                                        flColuna = true;
-                                        sequencia = index;
-                                    }
-                                })
-                                if(flColuna){
-                                    dbcoluna.sequencia = sequencia;
-                                }
-                            })
-                        }else{ //Respostas
-                            let campos:{ idColuna: number, deCampo: string }[] = [];
-                            let campo: { idColuna: number, deCampo: string };
-                            let idResposta: string = '';
-                            let carimbo: string = '';
-                
-                            for(var i = 0; i < sheetLists.length; i++){
-                                if(i == 0){
-                                    carimbo = sheetLists[i] as string;
-                                }else if(i == 1){
-                                    idResposta = sheetLists[i] as string;
-                                }else if(i > 1){
-                                    campo = {
-                                        'idColuna': classificacao.colunas[i].idColuna as number,
-                                        'deCampo': sheetLists[i] as string
-                                    }
-                                    campos.push(campo);
-                                }
-                            };
-                            classificacao.respostas.push({
-                                'idResposta': idResposta, 
-                                'carimbo': carimbo,
-                                'campos': campos
-                            })
-                        }
-                        count++;
-                    })
-    
-                })
-    
-                
-    
-    
-                
-                db.classificacaoUpdate(classificacao);
-            }
-        }).catch(function(e) {
-            console.log(e);
-        })
-    }
-
-    
-
-    sheets.forEach(sheetLists => {
-
-        if(count == 0){ //Classificacao
-            let contItem = 0;
-            sheetLists.forEach(item => {
-                if(contItem == 0){
-                    classificacao.idSheet = item as number;
-                }else{
-                    classificacao.nmSheet = item as string;
-                }
-                contItem++;
-            });
-        }else if(count == 1){ //Colunas
-            for(var i = 0; i < sheetLists.length; i++){
-                classificacao.colunas.push({
-                    'idColuna': i,
-                    'sequencia': i, 
-                    'nmColuna': sheetLists[i] as string
-                })
-            };
-        }else{ //Respostas
-            let campos:{ idColuna: number, deCampo: string }[] = [];
-            let campo: { idColuna: number, deCampo: string };
-            let idResposta: string = '';
-            let carimbo: string = '';
-
-            for(var i = 0; i < sheetLists.length; i++){
-                if(i == 0){
-                    carimbo = sheetLists[i] as string;
-                }else if(i == 1){
-                    idResposta = sheetLists[i] as string;
-                }else if(i > 1){
-                    campo = {
-                        'idColuna': classificacao.colunas[i].idColuna as number,
-                        'deCampo': sheetLists[i] as string
-                    }
-                    campos.push(campo);
-                }
-            };
-            classificacao.respostas.push({
-                'idResposta': idResposta, 
-                'carimbo': carimbo,
-                'campos': campos
-            })
+    sheets.forEach(sheet => {
+        if(count == 0){
+            sheet.forEach(item => { header.push(item) });
+        }else if(count == 1){
+            sheet.forEach(item => { colunas.push(item) });
+        }else{
+            respostas.push(sheet)
         }
         count++;
     })
 
-    db.classificacaoFindByIdSheet(classificacao.idSheet).then((classificacoes) => {
+    db.classificacaoFindByIdSheet(header[0] as number).then((classificacoes) => {
         if(classificacoes.length <= 0){
+
+            let classificacao = new Classificacao();
+
+            getHeader(classificacao)
+            getColunas(classificacao)
+            getRespostas(classificacao)
+
             db.classificacaoSave(classificacao);
         }else{
-            classificacoes[0].colunas.forEach(dbcoluna => {
-                classificacao.colunas.forEach(coluna => {
-                    if(coluna.nmColuna == dbcoluna.nmColuna){
-                        coluna.idColuna = dbcoluna.idColuna;
-                    }
-                })
-            })
+            let classificacao = classificacoes[0];
+            classificacao.respostas = [];
+
+            getRespostas(classificacao)
+
             db.classificacaoUpdate(classificacao);
         }
     }).catch(function(e) {
         console.log(e);
     })
 
-    //console.log("Classificacao: ", classificacao);
+    const getHeader = async (classificacao:IClassificacao) => {
+        header.forEach((item, i) => {
+            i == 0 ? 
+            classificacao.idSheet = item as number: 
+            classificacao.nmSheet = item as string;
+        });
+    }
+
+    const getColunas = async (classificacao:IClassificacao) => {
+        colunas.forEach((item, i) => {
+            classificacao.colunas.push({
+                'idColuna': i,
+                'nmColuna': item as string
+            })
+        })
+    }
+
+    const getRespostas = async (classificacao:IClassificacao) => {
+
+        respostas.forEach(resposta => {
+
+            let campos:{ idColuna: number, deCampo: string }[] = [];
+            let campo: { idColuna: number, deCampo: string };
+            let idResposta: string = '';
+            let carimbo: string = '';
+
+            resposta.forEach((item, i) => {
+                if(i == 0){
+                    carimbo = item as string;
+                }else if(i == 1){
+                    idResposta = item as string;
+                }else if(i > 1){
+                    campo = {
+                        'idColuna': classificacao.colunas[i].idColuna as number,
+                        'deCampo': item as string
+                    }
+                    campos.push(campo);
+                }
+            })
+            classificacao.respostas.push({
+                'idResposta': idResposta,
+                'carimbo': carimbo,
+                'campos': campos
+            })
+        })
+    }
 
     res.sendStatus(200)
 }

@@ -14,7 +14,9 @@ var server = Express();
 var request = require('request');
 var cors = require('cors')
 
-/* Middleware */
+//-----------------------------------------
+// Middleware
+//-----------------------------------------
 
 server.use(Cors());
 server.options('*', Cors());
@@ -49,7 +51,23 @@ server.use(
     })
 );
 
-/* Rotas */
+//-----------------------------------------
+// Mongoose Settings 
+https://jasonwatmore.com/post/2018/12/06/deploy-to-heroku-node-mongo-api-for-authentication-registration-and-user-management
+//-----------------------------------------
+const mongoose = require("mongoose");
+
+server.use((req, res, next) => {
+    if (mongoose.connection.readyState) {
+        next();
+    } else {
+        require("./mongo")().then(() => next());
+    }
+});
+
+//-----------------------------------------
+// Rotas
+//-----------------------------------------
 
 server.get("/", async function(req, res){ 
     res.send("<h1>Hello World 123456<h2>");
@@ -61,7 +79,9 @@ server.use('/produtos/', RouterProdutos);
 
 server.use(function(err, req, res, next) { res.status(500).json(err); });
 
-/* Server Start */
+//-----------------------------------------
+// Server Start
+//-----------------------------------------
 
 server.listen(process.env.PORT || 3443, function () {
     console.log('Server is running on http://localhost:3443');

@@ -5,7 +5,6 @@ export interface IClassificacao {
     nmSheet: string,
     colunas: {
         idColuna: number,
-        sequencia: number,
         nmColuna: string 
     }[],
     respostas: {
@@ -37,7 +36,6 @@ export class Classificacao implements IClassificacao {
     nmSheet = '';
     colunas: {
         idColuna: number,
-        sequencia: number,
         nmColuna: string 
     }[] = [];
     respostas: {

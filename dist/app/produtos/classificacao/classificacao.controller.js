@@ -52,162 +52,95 @@ var classificacao_mock_1 = __importDefault(require("./classificacao.mock"));
 //var request = require('request');
 // Classificacao
 exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var classificacao, sheets, count;
+    var sheets, count, header, colunas, respostas, getHeader, getColunas, getRespostas;
+    var _this = this;
     return __generator(this, function (_a) {
-        classificacao = new classificacao_1.Classificacao();
         sheets = classificacao_mock_1.default;
         count = 0;
-        if (sheets.length > 0) {
-            db.classificacaoFindByIdSheet(sheets[0][0]).then(function (dbclassificacoes) {
-                if (dbclassificacoes.length > 0) {
-                    dbclassificacoes.forEach(function (dbclassificacao) {
-                        sheets.forEach(function (sheetLists) {
-                            if (count == 0) { //Classificacao
-                                sheetLists.forEach(function (item, index) {
-                                    if (index == 1) {
-                                        dbclassificacao.nmSheet = item;
-                                    }
-                                });
-                            }
-                            else if (count == 1) { //Colunas 
-                                sheetLists.forEach(function (item, index) {
-                                    var flColuna = false;
-                                    dbclassificacao.colunas.forEach(function (dbcoluna) {
-                                        if (item == dbcoluna.nmColuna) {
-                                            flColuna = true;
-                                        }
-                                    });
-                                    if (!flColuna) {
-                                        var idColunaMax = Math.max.apply(Math, dbclassificacao.colunas.map(function (maxCol) {
-                                            return maxCol.idColuna;
-                                        }));
-                                        dbclassificacao.colunas.push({
-                                            'idColuna': ++idColunaMax,
-                                            'sequencia': index,
-                                            'nmColuna': item
-                                        });
-                                    }
-                                });
-                                dbclassificacao.colunas.forEach(function (dbcoluna) {
-                                    var flColuna = false;
-                                    var sequencia = -1;
-                                    sheetLists.forEach(function (item, index) {
-                                        if (item == dbcoluna.nmColuna) {
-                                            flColuna = true;
-                                            sequencia = index;
-                                        }
-                                    });
-                                    if (flColuna) {
-                                        dbcoluna.sequencia = sequencia;
-                                    }
-                                });
-                            }
-                            else { //Respostas
-                                var campos = [];
-                                var campo = void 0;
-                                var idResposta = '';
-                                var carimbo = '';
-                                for (var i = 0; i < sheetLists.length; i++) {
-                                    if (i == 0) {
-                                        carimbo = sheetLists[i];
-                                    }
-                                    else if (i == 1) {
-                                        idResposta = sheetLists[i];
-                                    }
-                                    else if (i > 1) {
-                                        campo = {
-                                            'idColuna': classificacao.colunas[i].idColuna,
-                                            'deCampo': sheetLists[i]
-                                        };
-                                        campos.push(campo);
-                                    }
-                                }
-                                ;
-                                classificacao.respostas.push({
-                                    'idResposta': idResposta,
-                                    'carimbo': carimbo,
-                                    'campos': campos
-                                });
-                            }
-                            count++;
-                        });
-                    });
-                    db.classificacaoUpdate(classificacao);
-                }
-            }).catch(function (e) {
-                console.log(e);
-            });
-        }
-        sheets.forEach(function (sheetLists) {
-            if (count == 0) { //Classificacao
-                var contItem_1 = 0;
-                sheetLists.forEach(function (item) {
-                    if (contItem_1 == 0) {
-                        classificacao.idSheet = item;
-                    }
-                    else {
-                        classificacao.nmSheet = item;
-                    }
-                    contItem_1++;
-                });
+        header = [];
+        colunas = [];
+        respostas = [];
+        sheets.forEach(function (sheet) {
+            if (count == 0) {
+                sheet.forEach(function (item) { header.push(item); });
             }
-            else if (count == 1) { //Colunas
-                for (var i = 0; i < sheetLists.length; i++) {
-                    classificacao.colunas.push({
-                        'idColuna': i,
-                        'sequencia': i,
-                        'nmColuna': sheetLists[i]
-                    });
-                }
-                ;
+            else if (count == 1) {
+                sheet.forEach(function (item) { colunas.push(item); });
             }
-            else { //Respostas
-                var campos = [];
-                var campo = void 0;
-                var idResposta = '';
-                var carimbo = '';
-                for (var i = 0; i < sheetLists.length; i++) {
-                    if (i == 0) {
-                        carimbo = sheetLists[i];
-                    }
-                    else if (i == 1) {
-                        idResposta = sheetLists[i];
-                    }
-                    else if (i > 1) {
-                        campo = {
-                            'idColuna': classificacao.colunas[i].idColuna,
-                            'deCampo': sheetLists[i]
-                        };
-                        campos.push(campo);
-                    }
-                }
-                ;
-                classificacao.respostas.push({
-                    'idResposta': idResposta,
-                    'carimbo': carimbo,
-                    'campos': campos
-                });
+            else {
+                respostas.push(sheet);
             }
             count++;
         });
-        db.classificacaoFindByIdSheet(classificacao.idSheet).then(function (classificacoes) {
+        db.classificacaoFindByIdSheet(header[0]).then(function (classificacoes) {
             if (classificacoes.length <= 0) {
+                var classificacao = new classificacao_1.Classificacao();
+                getHeader(classificacao);
+                getColunas(classificacao);
+                getRespostas(classificacao);
                 db.classificacaoSave(classificacao);
             }
             else {
-                classificacoes[0].colunas.forEach(function (dbcoluna) {
-                    classificacao.colunas.forEach(function (coluna) {
-                        if (coluna.nmColuna == dbcoluna.nmColuna) {
-                            coluna.idColuna = dbcoluna.idColuna;
-                        }
-                    });
-                });
+                var classificacao = classificacoes[0];
+                classificacao.respostas = [];
+                getRespostas(classificacao);
                 db.classificacaoUpdate(classificacao);
             }
         }).catch(function (e) {
             console.log(e);
         });
-        //console.log("Classificacao: ", classificacao);
+        getHeader = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                header.forEach(function (item, i) {
+                    i == 0 ?
+                        classificacao.idSheet = item :
+                        classificacao.nmSheet = item;
+                });
+                return [2 /*return*/];
+            });
+        }); };
+        getColunas = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                colunas.forEach(function (item, i) {
+                    classificacao.colunas.push({
+                        'idColuna': i,
+                        'nmColuna': item
+                    });
+                });
+                return [2 /*return*/];
+            });
+        }); };
+        getRespostas = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                respostas.forEach(function (resposta) {
+                    var campos = [];
+                    var campo;
+                    var idResposta = '';
+                    var carimbo = '';
+                    resposta.forEach(function (item, i) {
+                        if (i == 0) {
+                            carimbo = item;
+                        }
+                        else if (i == 1) {
+                            idResposta = item;
+                        }
+                        else if (i > 1) {
+                            campo = {
+                                'idColuna': classificacao.colunas[i].idColuna,
+                                'deCampo': item
+                            };
+                            campos.push(campo);
+                        }
+                    });
+                    classificacao.respostas.push({
+                        'idResposta': idResposta,
+                        'carimbo': carimbo,
+                        'campos': campos
+                    });
+                });
+                return [2 /*return*/];
+            });
+        }); };
         res.sendStatus(200);
         return [2 /*return*/];
     });
