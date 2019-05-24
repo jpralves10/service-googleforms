@@ -39,7 +39,7 @@ gulp.task('server-exit', function(){
         console.log(stdout);
         console.log(stderr);
         //cb(err);
-    });     
+    });
 })
 
 gulp.task('watch', function() {
