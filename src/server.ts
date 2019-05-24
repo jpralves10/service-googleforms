@@ -21,27 +21,6 @@ var cors = require('cors')
 server.use(Cors());
 server.options('*', Cors());
 
-server.use(function(req, res, next) {
-
-    //req.setHeader('Access-Control-Allow-Origin', '*');
-    //req.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    //req.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,X-Access-Token,XKey,Authorization');
-    //req.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
-    /*req.setHeader('Access-Control-Request-Method', 'GET');
-    req.setHeader('Access-Control-Request-Headers', 'origin, x-requested-with, accept');
-    req.setHeader('Origin', 'https://localhost:3443');
-
-    res.setHeader('Access-Control-Allow-Origin', 'https://localhost:3443');
-    res.setHeader('Access-Control-Allow-Methods', 'GET');*/
-
-    /*res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");*/
-
-    next();
-});
-
 server.use(BodyParser.json());
 server.use(Auth);
 
