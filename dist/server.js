@@ -40,6 +40,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var cors_1 = __importDefault(require("cors"));
+//import Https from 'https';
+//import fs from 'fs';
 var body_parser_1 = __importDefault(require("body-parser"));
 var auth_1 = __importDefault(require("./config/auth"));
 var router_1 = __importDefault(require("./app/produtos/router"));

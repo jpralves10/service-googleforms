@@ -10,6 +10,8 @@ import dadosMock from './classificacao.mock';
 
 export const setClassificacao = async (req: Request, res: Response) => {
 
+    console.log(req.body);
+
     var sheets = dadosMock; //req.body
     var count = 0;
 

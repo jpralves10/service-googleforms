@@ -55,6 +55,7 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
     var sheets, count, header, colunas, respostas, getHeader, getColunas, getRespostas;
     var _this = this;
     return __generator(this, function (_a) {
+        console.log(req.body);
         sheets = classificacao_mock_1.default;
         count = 0;
         header = [];

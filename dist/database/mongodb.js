@@ -8,7 +8,7 @@ var credentials_1 = require("../config/credentials");
 exports.connection = mongodb_1.default.connect(credentials_1.MONGODB_CONNECTIONSTRING, {
     useNewUrlParser: true
 });
-exports.crawlerDB = exports.connection.then(function (conn) { return conn.db('heroku_v5w2cb6t'); }); //conn.db('crawler'));
+exports.crawlerDB = exports.connection.then(function (conn) { return conn.db('crawler') || conn.db('heroku_v5w2cb6t'); });
 /* Collections */
 exports.produtosCollection = exports.crawlerDB.then(function (db) {
     return db.collection('produtos');

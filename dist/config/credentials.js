@@ -5,5 +5,5 @@ exports.MONGODB_USER = process.env.MONGODB_USER || 'maestro';
 exports.MONGODB_PASSWORD = process.env.MONGODB_PASSWORD || 'eficimaestro';
 exports.MONGODB_AUTHDB = process.env.MONGODB_AUTHDB || 'crawler';
 var URI = "mongodb://" + exports.MONGODB_USER + ":" + exports.MONGODB_PASSWORD + "@" + exports.MONGODB_HOST + "/" + exports.MONGODB_AUTHDB;
-console.log("URI: ", URI);
+console.log("MONGODB_URI: ", process.env.MONGODB_URI);
 exports.MONGODB_CONNECTIONSTRING = process.env.MONGODB_URI || URI;
