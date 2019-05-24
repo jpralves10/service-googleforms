@@ -8,7 +8,7 @@ export const connection = mongo.connect(MONGODB_CONNECTIONSTRING, {
   useNewUrlParser: true
 });
 
-export const crawlerDB = connection.then(conn => conn.db('crawler'));
+export const crawlerDB = connection.then(conn => conn.db('heroku_v5w2cb6t')); //conn.db('crawler'));
 
 /* Collections */
 

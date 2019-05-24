@@ -46,7 +46,9 @@ var router_1 = __importDefault(require("./app/produtos/router"));
 var server = express_1.default();
 var request = require('request');
 var cors = require('cors');
-/* Middleware */
+//-----------------------------------------
+// Middleware
+//-----------------------------------------
 server.use(cors_1.default());
 server.options('*', cors_1.default());
 server.use(function (req, res, next) {
@@ -70,7 +72,9 @@ server.use(auth_1.default);
 server.use(body_parser_1.default.urlencoded({
     extended: true
 }));
-/* Rotas */
+//-----------------------------------------
+// Rotas
+//-----------------------------------------
 server.get("/", function (req, res) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -82,7 +86,9 @@ server.get("/", function (req, res) {
 server.use('/produtos/', router_1.default);
 //server.get('*', (req, res) => { res.sendStatus(404); });
 server.use(function (err, req, res, next) { res.status(500).json(err); });
-/* Server Start */
+//-----------------------------------------
+// Server Start
+//-----------------------------------------
 server.listen(process.env.PORT || 3443, function () {
     console.log('Server is running on http://localhost:3443');
 })

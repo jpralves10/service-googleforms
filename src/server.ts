@@ -52,20 +52,6 @@ server.use(
 );
 
 //-----------------------------------------
-// Mongoose Settings 
-https://jasonwatmore.com/post/2018/12/06/deploy-to-heroku-node-mongo-api-for-authentication-registration-and-user-management
-//-----------------------------------------
-const mongoose = require("mongoose");
-
-server.use((req, res, next) => {
-    if (mongoose.connection.readyState) {
-        next();
-    } else {
-        require("./mongo")().then(() => next());
-    }
-});
-
-//-----------------------------------------
 // Rotas
 //-----------------------------------------
 
