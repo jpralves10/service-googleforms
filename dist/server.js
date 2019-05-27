@@ -53,22 +53,6 @@ var cors = require('cors');
 //-----------------------------------------
 server.use(cors_1.default());
 server.options('*', cors_1.default());
-server.use(function (req, res, next) {
-    //req.setHeader('Access-Control-Allow-Origin', '*');
-    //req.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    //req.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,X-Access-Token,XKey,Authorization');
-    //req.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    /*req.setHeader('Access-Control-Request-Method', 'GET');
-    req.setHeader('Access-Control-Request-Headers', 'origin, x-requested-with, accept');
-    req.setHeader('Origin', 'https://localhost:3443');
-
-    res.setHeader('Access-Control-Allow-Origin', 'https://localhost:3443');
-    res.setHeader('Access-Control-Allow-Methods', 'GET');*/
-    /*res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");*/
-    next();
-});
 server.use(body_parser_1.default.json());
 server.use(auth_1.default);
 server.use(body_parser_1.default.urlencoded({
@@ -95,7 +79,9 @@ server.listen(process.env.PORT || 3443, function () {
     console.log('Server is running on http://localhost:3443');
 })
     .on('error', function (err) { return console.log(err); });
-/* Server Https */
+//-----------------------------------------
+// Server Https
+//-----------------------------------------
 /*
 var options = {
     key: fs.readFileSync("./keys/key.key"),
