@@ -13,7 +13,7 @@ var ClassificacaoController = __importStar(require("./classificacao/classificaca
 var router = express_1.Router();
 router.post('/filtro/catalogo', CatalogoController.filtro);
 router.get('/comentario/find', ClassificacaoController.getComentarios);
-router.post('/comentario/save', ClassificacaoController.setComentario);
+router.post('/comentario/save', ClassificacaoController.setComentarios);
 router.post('/classificacao/find', ClassificacaoController.getClassificacao);
 router.get('/classificacao/save', ClassificacaoController.setClassificacao);
 /*router.post('/alterar', CatalogoController.alterar);

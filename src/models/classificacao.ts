@@ -3,6 +3,7 @@ export interface IClassificacao {
     _id?: any
     idSheet: number,
     nmSheet: string,
+    version: number,
     colunas: {
         idColuna: number,
         nmColuna: string 
@@ -34,6 +35,7 @@ export class Classificacao implements IClassificacao {
     _id?: any
     idSheet = 0;
     nmSheet = '';
+    version = 0;
     colunas: {
         idColuna: number,
         nmColuna: string 

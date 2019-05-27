@@ -12,6 +12,11 @@ export const classificacaoFindByIdSheet = async (idSheet:number) => {
     return await col.find({idSheet: idSheet}).toArray() as IClassificacao[];
 }
 
+export const classificacaoFindByIdSheetAndVersion = async (idSheet:number, version:number) => {
+    const col = await classificacaoCollection;
+    return await col.find({idSheet: idSheet, version:version}).toArray() as IClassificacao[];
+}
+
 export const classificacaoSave = async (classificacao:Classificacao) => {
     const col = await classificacaoCollection;
     await col.insertOne(classificacao).then(() => {

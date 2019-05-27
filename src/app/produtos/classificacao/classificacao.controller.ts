@@ -31,34 +31,46 @@ export const setClassificacao = async (req: Request, res: Response) => {
     })
 
     db.classificacaoFindByIdSheet(header[0] as number).then((classificacoes) => {
-        if(classificacoes.length <= 0){
-
-            let classificacao = new Classificacao();
-
-            getHeader(classificacao)
-            getColunas(classificacao)
-            getRespostas(classificacao)
-
-            db.classificacaoSave(classificacao);
+        if(classificacoes.length == 0){
+            setNewClassificacao(0);
         }else{
+            setSortClassificacoes(classificacoes);
             let classificacao = classificacoes[0];
-            classificacao.respostas = [];
 
-            getRespostas(classificacao)
-
-            db.classificacaoUpdate(classificacao);
+            if(getVerificarVersao(classificacao)){
+                classificacao.respostas = [];
+                getRespostas(classificacao)
+                db.classificacaoUpdate(classificacao);
+            }else{
+                setNewClassificacao(++classificacao.version);
+            }
         }
     }).catch(function(e) {
         console.log(e);
     })
+
+    const setSortClassificacoes = async (classificacoes:IClassificacao[]) => {
+        classificacoes.sort((a, b) => a.version > b.version ? 1 : -1 );
+    };
+
+    const setNewClassificacao = async (version:number) => {
+        let classificacao = new Classificacao();
+        classificacao.version = version;
+
+        getHeader(classificacao)
+        getColunas(classificacao)
+        getRespostas(classificacao)
+
+        db.classificacaoSave(classificacao);
+    };
 
     const getHeader = async (classificacao:IClassificacao) => {
         header.forEach((item, i) => {
             i == 0 ? 
             classificacao.idSheet = item as number: 
             classificacao.nmSheet = item as string;
-        });
-    }
+        })
+    };
 
     const getColunas = async (classificacao:IClassificacao) => {
         colunas.forEach((item, i) => {
@@ -67,7 +79,7 @@ export const setClassificacao = async (req: Request, res: Response) => {
                 'nmColuna': item as string
             })
         })
-    }
+    };
 
     const getRespostas = async (classificacao:IClassificacao) => {
 
@@ -97,7 +109,26 @@ export const setClassificacao = async (req: Request, res: Response) => {
                 'campos': campos
             })
         })
-    }
+    };
+
+    const getVerificarVersao = async (classificacao:IClassificacao) => {
+        
+        if(classificacao.colunas.length != colunas.length){
+            return false;
+        }
+        classificacao.colunas.forEach(dbcoluna => {
+            let flColuna = false;
+            colunas.forEach(coluna => {
+                if(coluna == dbcoluna.nmColuna){
+                    flColuna = true;
+                }
+            })
+            if(!flColuna){
+                return false;
+            }
+        })
+        return true;
+    };
 
     res.sendStatus(200)
 }
@@ -107,10 +138,10 @@ export const getClassificacao = async (req: Request, res: Response) => {
     let classificacao: IClassificacao = req.body;
 
     db.classificacaoFindByIdSheet(classificacao.idSheet).then((classificacoes) => {
-        if(classificacoes.length == 1){
-            res.send(classificacoes[0])
+        if(classificacoes.length > 0){
+            res.send(classificacoes)
         }else{
-            res.send({} as IClassificacao)
+            res.send([])
         }
     }).catch(function(e) {
         console.log(e);
@@ -174,7 +205,7 @@ export const getComentarios = async (req: Request, res: Response) => {
     })
 }
 
-export const setComentario = async (req: Request, res: Response) => {
+export const setComentarios = async (req: Request, res: Response) => {
 
     /*let comentarios = [{
         idSheet: 1997890537,
@@ -189,45 +220,49 @@ export const setComentario = async (req: Request, res: Response) => {
         dataAtualizacao: new Date()
     }]*/
 
-    let comentario = req.body;
+    let comentarios = req.body;
 
-    db.classificacaoFindByIdSheet(comentario.idSheet).then((classificacoes) => {
-        if(classificacoes.length == 1){
-            classificacoes.forEach(classificacao => {
-                if(classificacao.comentarios.length > 0){
-                    let flcomentario = false;
+    comentarios.forEach(comentario => {
+        db.classificacaoFindByIdSheetAndVersion(comentario.idSheet, comentario.sheetVersao).then((classificacoes) => {
 
-                    let idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map((maxCom) => { 
-                        return maxCom.idComentario; 
-                    }))
+            let classificacao = classificacoes[0];
+            comentario.side = undefined;
 
-                    classificacao.comentarios.forEach(dbcomentario => {
-                        if(dbcomentario.idComentario == comentario.idComentario &&
-                            dbcomentario.idResposta == comentario.idResposta &&
-                            dbcomentario.idColuna == comentario.idColuna){
+            if(classificacao.comentarios.length > 0){
+                let flcomentario = false;
 
-                            dbcomentario.descricao = comentario.descricao;
-                            dbcomentario.status = comentario.status;
-                            dbcomentario.dataAtualizacao = new Date();
-                            flcomentario = true;
-                        }
-                    })
-                    if(flcomentario){
-                        db.classificacaoUpdate(classificacao);
-                    }else{
-                        comentario.idComentario = ++idComentarioMax;
-                        classificacao.comentarios.push(comentario);
-                        db.classificacaoUpdate(classificacao);
+                let idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map((maxCom) => { 
+                    return maxCom.idComentario; 
+                }))
+
+                classificacao.comentarios.forEach(dbcomentario => {
+                    if(dbcomentario.idComentario == comentario.idComentario &&
+                        dbcomentario.idResposta == comentario.idResposta &&
+                        dbcomentario.idColuna == comentario.idColuna){
+
+                        dbcomentario.descricao = comentario.descricao;
+                        dbcomentario.status = comentario.status;
+                        dbcomentario.dataAtualizacao = new Date();
+                        flcomentario = true;
                     }
+                })
+
+                if(flcomentario){
+                    db.classificacaoUpdate(classificacao);
                 }else{
-                    comentario.idComentario = 0;
+                    comentario.idComentario = ++idComentarioMax;
                     classificacao.comentarios.push(comentario);
                     db.classificacaoUpdate(classificacao);
                 }
-            })
-            res.send(classificacoes[0]);
-        }
-    }).catch(function(e) {
-        console.log(e);
+            }else{
+                comentario.idComentario = 0;
+                classificacao.comentarios.push(comentario);
+                db.classificacaoUpdate(classificacao);
+            }
+        }).catch(function(e) {
+            console.log(e);
+        })
     })
+
+    res.send('200');
 }

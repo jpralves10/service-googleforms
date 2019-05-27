@@ -52,7 +52,7 @@ var classificacao_mock_1 = __importDefault(require("./classificacao.mock"));
 //var request = require('request');
 // Classificacao
 exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var sheets, count, header, colunas, respostas, getHeader, getColunas, getRespostas;
+    var sheets, count, header, colunas, respostas, setSortClassificacoes, setNewClassificacao, getHeader, getColunas, getRespostas, getVerificarVersao;
     var _this = this;
     return __generator(this, function (_a) {
         console.log(req.body);
@@ -74,22 +74,42 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
             count++;
         });
         db.classificacaoFindByIdSheet(header[0]).then(function (classificacoes) {
-            if (classificacoes.length <= 0) {
-                var classificacao = new classificacao_1.Classificacao();
-                getHeader(classificacao);
-                getColunas(classificacao);
-                getRespostas(classificacao);
-                db.classificacaoSave(classificacao);
+            if (classificacoes.length == 0) {
+                setNewClassificacao(0);
             }
             else {
+                setSortClassificacoes(classificacoes);
                 var classificacao = classificacoes[0];
-                classificacao.respostas = [];
-                getRespostas(classificacao);
-                db.classificacaoUpdate(classificacao);
+                if (getVerificarVersao(classificacao)) {
+                    classificacao.respostas = [];
+                    getRespostas(classificacao);
+                    db.classificacaoUpdate(classificacao);
+                }
+                else {
+                    setNewClassificacao(++classificacao.version);
+                }
             }
         }).catch(function (e) {
             console.log(e);
         });
+        setSortClassificacoes = function (classificacoes) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                classificacoes.sort(function (a, b) { return a.version > b.version ? 1 : -1; });
+                return [2 /*return*/];
+            });
+        }); };
+        setNewClassificacao = function (version) { return __awaiter(_this, void 0, void 0, function () {
+            var classificacao;
+            return __generator(this, function (_a) {
+                classificacao = new classificacao_1.Classificacao();
+                classificacao.version = version;
+                getHeader(classificacao);
+                getColunas(classificacao);
+                getRespostas(classificacao);
+                db.classificacaoSave(classificacao);
+                return [2 /*return*/];
+            });
+        }); };
         getHeader = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 header.forEach(function (item, i) {
@@ -142,6 +162,25 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                 return [2 /*return*/];
             });
         }); };
+        getVerificarVersao = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                if (classificacao.colunas.length != colunas.length) {
+                    return [2 /*return*/, false];
+                }
+                classificacao.colunas.forEach(function (dbcoluna) {
+                    var flColuna = false;
+                    colunas.forEach(function (coluna) {
+                        if (coluna == dbcoluna.nmColuna) {
+                            flColuna = true;
+                        }
+                    });
+                    if (!flColuna) {
+                        return false;
+                    }
+                });
+                return [2 /*return*/, true];
+            });
+        }); };
         res.sendStatus(200);
         return [2 /*return*/];
     });
@@ -151,11 +190,11 @@ exports.getClassificacao = function (req, res) { return __awaiter(_this, void 0,
     return __generator(this, function (_a) {
         classificacao = req.body;
         db.classificacaoFindByIdSheet(classificacao.idSheet).then(function (classificacoes) {
-            if (classificacoes.length == 1) {
-                res.send(classificacoes[0]);
+            if (classificacoes.length > 0) {
+                res.send(classificacoes);
             }
             else {
-                res.send({});
+                res.send([]);
             }
         }).catch(function (e) {
             console.log(e);
@@ -216,48 +255,48 @@ exports.getComentarios = function (req, res) { return __awaiter(_this, void 0, v
         return [2 /*return*/];
     });
 }); };
-exports.setComentario = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var comentario;
+exports.setComentarios = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var comentarios;
     return __generator(this, function (_a) {
-        comentario = req.body;
-        db.classificacaoFindByIdSheet(comentario.idSheet).then(function (classificacoes) {
-            if (classificacoes.length == 1) {
-                classificacoes.forEach(function (classificacao) {
-                    if (classificacao.comentarios.length > 0) {
-                        var flcomentario_1 = false;
-                        var idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map(function (maxCom) {
-                            return maxCom.idComentario;
-                        }));
-                        classificacao.comentarios.forEach(function (dbcomentario) {
-                            if (dbcomentario.idComentario == comentario.idComentario &&
-                                dbcomentario.idResposta == comentario.idResposta &&
-                                dbcomentario.idColuna == comentario.idColuna) {
-                                dbcomentario.descricao = comentario.descricao;
-                                dbcomentario.status = comentario.status;
-                                dbcomentario.dataAtualizacao = new Date();
-                                flcomentario_1 = true;
-                            }
-                        });
-                        if (flcomentario_1) {
-                            db.classificacaoUpdate(classificacao);
+        comentarios = req.body;
+        comentarios.forEach(function (comentario) {
+            db.classificacaoFindByIdSheetAndVersion(comentario.idSheet, comentario.sheetVersao).then(function (classificacoes) {
+                var classificacao = classificacoes[0];
+                comentario.side = undefined;
+                if (classificacao.comentarios.length > 0) {
+                    var flcomentario_1 = false;
+                    var idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map(function (maxCom) {
+                        return maxCom.idComentario;
+                    }));
+                    classificacao.comentarios.forEach(function (dbcomentario) {
+                        if (dbcomentario.idComentario == comentario.idComentario &&
+                            dbcomentario.idResposta == comentario.idResposta &&
+                            dbcomentario.idColuna == comentario.idColuna) {
+                            dbcomentario.descricao = comentario.descricao;
+                            dbcomentario.status = comentario.status;
+                            dbcomentario.dataAtualizacao = new Date();
+                            flcomentario_1 = true;
                         }
-                        else {
-                            comentario.idComentario = ++idComentarioMax;
-                            classificacao.comentarios.push(comentario);
-                            db.classificacaoUpdate(classificacao);
-                        }
+                    });
+                    if (flcomentario_1) {
+                        db.classificacaoUpdate(classificacao);
                     }
                     else {
-                        comentario.idComentario = 0;
+                        comentario.idComentario = ++idComentarioMax;
                         classificacao.comentarios.push(comentario);
                         db.classificacaoUpdate(classificacao);
                     }
-                });
-                res.send(classificacoes[0]);
-            }
-        }).catch(function (e) {
-            console.log(e);
+                }
+                else {
+                    comentario.idComentario = 0;
+                    classificacao.comentarios.push(comentario);
+                    db.classificacaoUpdate(classificacao);
+                }
+            }).catch(function (e) {
+                console.log(e);
+            });
         });
+        res.send('200');
         return [2 /*return*/];
     });
 }); };

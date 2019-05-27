@@ -51,6 +51,18 @@ exports.classificacaoFindByIdSheet = function (idSheet) { return __awaiter(_this
         }
     });
 }); };
+exports.classificacaoFindByIdSheetAndVersion = function (idSheet, version) { return __awaiter(_this, void 0, void 0, function () {
+    var col;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
+            case 1:
+                col = _a.sent();
+                return [4 /*yield*/, col.find({ idSheet: idSheet, version: version }).toArray()];
+            case 2: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
 exports.classificacaoSave = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
     var col;
     return __generator(this, function (_a) {
