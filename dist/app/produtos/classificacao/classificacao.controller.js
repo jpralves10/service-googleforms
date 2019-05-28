@@ -292,11 +292,11 @@ exports.setComentarios = function (req, res) { return __awaiter(_this, void 0, v
                     classificacao.comentarios.push(comentario);
                     db.classificacaoUpdate(classificacao);
                 }
+                res.send([classificacao]);
             }).catch(function (e) {
                 console.log(e);
             });
         });
-        res.send('200');
         return [2 /*return*/];
     });
 }); };

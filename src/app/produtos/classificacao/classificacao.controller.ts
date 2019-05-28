@@ -259,10 +259,11 @@ export const setComentarios = async (req: Request, res: Response) => {
                 classificacao.comentarios.push(comentario);
                 db.classificacaoUpdate(classificacao);
             }
+            
+            res.send([classificacao]);
+
         }).catch(function(e) {
             console.log(e);
         })
     })
-
-    res.send('200');
 }
