@@ -7,7 +7,7 @@ import { Classificacao, IClassificacao } from '../../../models/classificacao';
 
 // Classificacao
 
-export const classificacaoFindByIdSheet = async (idSheet:number) => {
+export const classificacaoFindByIdSheet = async (idSheet:string) => {
     const col = await classificacaoCollection;
     return await col.find({idSheet: idSheet}).toArray() as IClassificacao[];
 }

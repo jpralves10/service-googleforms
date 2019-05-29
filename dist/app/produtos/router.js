@@ -10,14 +10,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var CatalogoController = __importStar(require("./catalogo/catalogo.controller"));
 var ClassificacaoController = __importStar(require("./classificacao/classificacao.controller"));
-var GoogleAuth = __importStar(require("./classificacao/google.auth"));
 var router = express_1.Router();
 router.post('/filtro/catalogo', CatalogoController.filtro);
 router.get('/comentario/find', ClassificacaoController.getComentarios);
 router.post('/comentario/save', ClassificacaoController.setComentarios);
 router.post('/classificacao/find', ClassificacaoController.getClassificacao);
 router.get('/classificacao/save', ClassificacaoController.setClassificacao);
-router.get('/google', GoogleAuth.googleFunction);
 /*router.post('/alterar', CatalogoController.alterar);
 router.get('/extrato', CatalogoController.extrato);*/
 exports.default = router;

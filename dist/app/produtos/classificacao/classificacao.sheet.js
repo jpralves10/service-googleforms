@@ -43,67 +43,98 @@ var googleapis_1 = require("googleapis");
 var privatekey_1 = __importDefault(require("../../../config/privatekey"));
 //http://isd-soft.com/tech_blog/accessing-google-apis-using-service-account-node-js/
 //https://console.cloud.google.com/apis/credentials?project=my-project-1498746435911&folder&organizationId
-exports.googleFunction = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var client, spreadsheetId, range, sheets;
+var sheets = googleapis_1.google.sheets('v4');
+var credentials = {
+    client_email: privatekey_1.default.client_email,
+    private_key: privatekey_1.default.private_key
+};
+var scopes = [
+    'https://www.googleapis.com/auth/forms',
+    'https://www.googleapis.com/auth/spreadsheets',
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/calendar'
+];
+exports.getSpreedsheet = function (spreadsheetId, range) { return __awaiter(_this, void 0, void 0, function () {
+    var googleAuth;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, googleapis_1.google.auth.getClient({
-                    credentials: {
-                        client_email: privatekey_1.default.client_email,
-                        private_key: privatekey_1.default.private_key
-                    },
-                    scopes: [
-                        'https://www.googleapis.com/auth/forms',
-                        'https://www.googleapis.com/auth/spreadsheets',
-                        'https://www.googleapis.com/auth/drive',
-                        'https://www.googleapis.com/auth/calendar'
-                    ]
+                    credentials: credentials,
+                    scopes: scopes
                 })];
             case 1:
-                client = _a.sent();
-                spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
-                range = 'A1:Q10000';
-                sheets = googleapis_1.google.sheets('v4');
-                //const project = await google.auth.getProjectId();
+                googleAuth = _a.sent();
+                return [4 /*yield*/, sheets.spreadsheets.values.get({
+                        auth: googleAuth,
+                        spreadsheetId: spreadsheetId,
+                        range: range
+                    }).then(function (response) {
+                        return response.data.values;
+                    })];
+            case 2: 
+            //let range = 'A1:Q10000'
+            return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.getSpreedsheetHeader = function (spreadsheetId, range) { return __awaiter(_this, void 0, void 0, function () {
+    var googleAuth;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, googleapis_1.google.auth.getClient({
+                    credentials: credentials,
+                    scopes: scopes
+                })];
+            case 1:
+                googleAuth = _a.sent();
+                //let range = 'A1:Q1'
                 sheets.spreadsheets.values.get({
-                    auth: client,
+                    auth: googleAuth,
                     spreadsheetId: spreadsheetId,
                     range: range
-                }, function (err, response) {
-                    if (err) {
-                        console.log('The API returned an error: ' + err);
-                    }
-                    else {
-                        //console.log(response);
-                        for (var _i = 0, _a = response.data.values; _i < _a.length; _i++) {
-                            var row = _a[_i];
-                            console.log(row);
-                        }
-                    }
+                }, function sheetReturn(err, response) {
+                    return __awaiter(this, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            if (err) {
+                                return [2 /*return*/, []];
+                            }
+                            else {
+                                return [2 /*return*/, response.data.values];
+                            }
+                            return [2 /*return*/];
+                        });
+                    });
                 });
-                /*sheets.spreadsheets.values.batchUpdate({
-                    auth: client,
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.setSpreedsheetEmail = function (spreadsheetId, range, values) { return __awaiter(_this, void 0, void 0, function () {
+    var googleAuth;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, googleapis_1.google.auth.getClient({
+                    credentials: credentials,
+                    scopes: scopes
+                })];
+            case 1:
+                googleAuth = _a.sent();
+                sheets.spreadsheets.values.batchUpdate({
+                    auth: googleAuth,
                     spreadsheetId: spreadsheetId,
                     requestBody: {
                         valueInputOption: 'USER_ENTERED',
                         data: [{
-                            majorDimension: 'COLUMNS',
-                            range: 'B2:B4',
-                            values: [['jpralves10@gmail.com', 'jean@eficilog.com', 'teste@eficilog.com']]
-                        }]
+                                majorDimension: 'COLUMNS',
+                                range: range,
+                                values: [values]
+                            }]
                     }
-                }, function (err, response:any) {
-                    if (err) {
-                        console.log('The API returned an error: ' + err, response);
-                    } else {
-                        console.log(response);
-            
-                        if(response.status == 200){
-            
-                        }
-                    }
-                })*/
-                res.sendStatus(200);
+                }, function (err, response) {
+                    err ?
+                        console.log('The API returned an error: ' + err) :
+                        response.status == 200 ? true : false;
+                });
                 return [2 /*return*/];
         }
     });

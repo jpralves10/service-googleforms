@@ -41,148 +41,156 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var classificacao_1 = require("../../../models/classificacao");
 var db = __importStar(require("./classificacao.database"));
-var classificacao_mock_1 = __importDefault(require("./classificacao.mock"));
+var sheet = __importStar(require("./classificacao.sheet"));
+var spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
 //var request = require('request');
 // Classificacao
+exports.setClassificacaoEmail = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var parametros;
+    return __generator(this, function (_a) {
+        parametros = res.body;
+        db.classificacaoFindByIdSheet(parametros.idSheet).then(function (classificacoes) {
+            if (classificacoes.length > 0) {
+                classificacoes.forEach(function (classificacao) {
+                    var qtdRespostas = classificacao.respostas.length;
+                    var range = 'B' + qtdRespostas + ':' + 'B' + qtdRespostas;
+                    sheet.setSpreedsheetEmail(parametros.idSheet, range, [parametros.idResposta]) ?
+                        res.send('200') : res.send('400');
+                });
+            }
+        });
+        return [2 /*return*/];
+    });
+}); };
 exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var sheets, count, header, colunas, respostas, setSortClassificacoes, setNewClassificacao, getHeader, getColunas, getRespostas, getVerificarVersao;
+    var parametros, sheets, colunas, respostas, setSortClassificacoes, setNewClassificacao, getHeader, getColunas, getRespostas, getVerificarVersao;
     var _this = this;
     return __generator(this, function (_a) {
-        console.log(req.body);
-        sheets = classificacao_mock_1.default;
-        count = 0;
-        header = [];
-        colunas = [];
-        respostas = [];
-        sheets.forEach(function (sheet) {
-            if (count == 0) {
-                sheet.forEach(function (item) { header.push(item); });
-            }
-            else if (count == 1) {
-                sheet.forEach(function (item) { colunas.push(item); });
-            }
-            else {
-                respostas.push(sheet);
-            }
-            count++;
-        });
-        db.classificacaoFindByIdSheet(header[0]).then(function (classificacoes) {
-            if (classificacoes.length == 0) {
-                setNewClassificacao(0);
-            }
-            else {
-                setSortClassificacoes(classificacoes);
-                var classificacao = classificacoes[0];
-                if (getVerificarVersao(classificacao)) {
-                    classificacao.respostas = [];
-                    getRespostas(classificacao);
-                    db.classificacaoUpdate(classificacao);
-                }
-                else {
-                    setNewClassificacao(++classificacao.version);
-                }
-            }
-        }).catch(function (e) {
-            console.log(e);
-        });
-        setSortClassificacoes = function (classificacoes) { return __awaiter(_this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                classificacoes.sort(function (a, b) { return a.version > b.version ? 1 : -1; });
-                return [2 /*return*/];
-            });
-        }); };
-        setNewClassificacao = function (version) { return __awaiter(_this, void 0, void 0, function () {
-            var classificacao;
-            return __generator(this, function (_a) {
-                classificacao = new classificacao_1.Classificacao();
-                classificacao.version = version;
-                getHeader(classificacao);
-                getColunas(classificacao);
-                getRespostas(classificacao);
-                db.classificacaoSave(classificacao);
-                return [2 /*return*/];
-            });
-        }); };
-        getHeader = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                header.forEach(function (item, i) {
+        switch (_a.label) {
+            case 0:
+                parametros = res.body;
+                return [4 /*yield*/, sheet.getSpreedsheet(parametros.idSheet, 'A1:Q10000')];
+            case 1:
+                sheets = _a.sent();
+                colunas = [];
+                respostas = [];
+                sheets.forEach(function (sheet, i) {
                     i == 0 ?
-                        classificacao.idSheet = item :
-                        classificacao.nmSheet = item;
+                        sheet.forEach(function (item) { colunas.push(item); }) :
+                        respostas.push(sheet);
                 });
-                return [2 /*return*/];
-            });
-        }); };
-        getColunas = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                colunas.forEach(function (item, i) {
-                    classificacao.colunas.push({
-                        'idColuna': i,
-                        'nmColuna': item
-                    });
-                });
-                return [2 /*return*/];
-            });
-        }); };
-        getRespostas = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                respostas.forEach(function (resposta) {
-                    var campos = [];
-                    var campo;
-                    var idResposta = '';
-                    var carimbo = '';
-                    resposta.forEach(function (item, i) {
-                        if (i == 0) {
-                            carimbo = item;
-                        }
-                        else if (i == 1) {
-                            idResposta = item;
-                        }
-                        else if (i > 1) {
-                            campo = {
-                                'idColuna': classificacao.colunas[i].idColuna,
-                                'deCampo': item
-                            };
-                            campos.push(campo);
-                        }
-                    });
-                    classificacao.respostas.push({
-                        'idResposta': idResposta,
-                        'carimbo': carimbo,
-                        'campos': campos
-                    });
-                });
-                return [2 /*return*/];
-            });
-        }); };
-        getVerificarVersao = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                if (classificacao.colunas.length != colunas.length) {
-                    return [2 /*return*/, false];
-                }
-                classificacao.colunas.forEach(function (dbcoluna) {
-                    var flColuna = false;
-                    colunas.forEach(function (coluna) {
-                        if (coluna == dbcoluna.nmColuna) {
-                            flColuna = true;
-                        }
-                    });
-                    if (!flColuna) {
-                        return false;
+                db.classificacaoFindByIdSheet(spreadsheetId).then(function (classificacoes) {
+                    if (classificacoes.length == 0) {
+                        setNewClassificacao(0);
                     }
+                    else {
+                        setSortClassificacoes(classificacoes);
+                        var classificacao = classificacoes[0];
+                        if (getVerificarVersao(classificacao)) {
+                            classificacao.respostas = [];
+                            getRespostas(classificacao);
+                            db.classificacaoUpdate(classificacao);
+                        }
+                        else {
+                            setNewClassificacao(++classificacao.version);
+                        }
+                    }
+                }).catch(function (e) {
+                    console.log(e);
                 });
-                return [2 /*return*/, true];
-            });
-        }); };
-        res.sendStatus(200);
-        return [2 /*return*/];
+                setSortClassificacoes = function (classificacoes) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        classificacoes.sort(function (a, b) { return a.version > b.version ? 1 : -1; });
+                        return [2 /*return*/];
+                    });
+                }); };
+                setNewClassificacao = function (version) { return __awaiter(_this, void 0, void 0, function () {
+                    var classificacao;
+                    return __generator(this, function (_a) {
+                        classificacao = new classificacao_1.Classificacao();
+                        classificacao.version = version;
+                        getHeader(classificacao);
+                        getColunas(classificacao);
+                        getRespostas(classificacao);
+                        db.classificacaoSave(classificacao);
+                        return [2 /*return*/];
+                    });
+                }); };
+                getHeader = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        classificacao.idSheet = parametros.idSheet;
+                        classificacao.nmSheet = parametros.nmSheet;
+                        return [2 /*return*/];
+                    });
+                }); };
+                getColunas = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        colunas.forEach(function (item, i) {
+                            classificacao.colunas.push({
+                                'idColuna': i,
+                                'nmColuna': item
+                            });
+                        });
+                        return [2 /*return*/];
+                    });
+                }); };
+                getRespostas = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        respostas.forEach(function (resposta) {
+                            var campos = [];
+                            var campo;
+                            var idResposta = '';
+                            var carimbo = '';
+                            resposta.forEach(function (item, i) {
+                                if (i == 0) {
+                                    carimbo = item;
+                                }
+                                else if (i == 1) {
+                                    idResposta = item;
+                                }
+                                else if (i > 1) {
+                                    campo = {
+                                        'idColuna': classificacao.colunas[i].idColuna,
+                                        'deCampo': item
+                                    };
+                                    campos.push(campo);
+                                }
+                            });
+                            classificacao.respostas.push({
+                                'idResposta': idResposta,
+                                'carimbo': carimbo,
+                                'campos': campos
+                            });
+                        });
+                        return [2 /*return*/];
+                    });
+                }); };
+                getVerificarVersao = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        if (classificacao.colunas.length != colunas.length) {
+                            return [2 /*return*/, false];
+                        }
+                        classificacao.colunas.forEach(function (dbcoluna) {
+                            var flColuna = false;
+                            colunas.forEach(function (coluna) {
+                                if (coluna == dbcoluna.nmColuna) {
+                                    flColuna = true;
+                                }
+                            });
+                            if (!flColuna) {
+                                return false;
+                            }
+                        });
+                        return [2 /*return*/, true];
+                    });
+                }); };
+                res.sendStatus(200);
+                return [2 /*return*/];
+        }
     });
 }); };
 exports.getClassificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
@@ -231,11 +239,11 @@ exports.getComentarios = function (req, res) { return __awaiter(_this, void 0, v
     var parametros, comentarios;
     return __generator(this, function (_a) {
         parametros = {
-            idSheet: 1997890537,
+            spreadsheetId: '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ',
             idResposta: 'jean@eficilog.com'
         };
         comentarios = [];
-        db.classificacaoFindByIdSheet(parametros.idSheet).then(function (classificacoes) {
+        db.classificacaoFindByIdSheet(parametros.spreadsheetId).then(function (classificacoes) {
             if (classificacoes.length > 0) {
                 classificacoes.forEach(function (classificacao) {
                     if (classificacao.comentarios.length > 0) {

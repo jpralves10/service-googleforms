@@ -3,34 +3,47 @@ import { Classificacao, IClassificacao } from '../../../models/classificacao';
 import * as db from './classificacao.database'
 
 import dadosMock from './classificacao.mock';
+import * as sheet from './classificacao.sheet';
+
+const spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
 
 //var request = require('request');
 
 // Classificacao
 
+export const setClassificacaoEmail = async (req: Request, res: Response) => {
+
+    let parametros: {idSheet: string, idResposta: string} = res.body
+
+    db.classificacaoFindByIdSheet(parametros.idSheet).then((classificacoes) => {
+        if(classificacoes.length > 0){
+            classificacoes.forEach(classificacao => {
+
+                let qtdRespostas = classificacao.respostas.length;
+                let range = 'B' + qtdRespostas + ':' + 'B' + qtdRespostas;
+
+                sheet.setSpreedsheetEmail(parametros.idSheet, range, [parametros.idResposta]) ?
+                res.send('200') : res.send('400')
+            })
+        }
+    })
+}
+
 export const setClassificacao = async (req: Request, res: Response) => {
 
-    console.log(req.body);
+    let parametros: {idSheet: string, nmSheet: string} = res.body
 
-    var sheets = dadosMock; //req.body
-    var count = 0;
-
-    var header: any = [];
+    var sheets = await sheet.getSpreedsheet(parametros.idSheet, 'A1:Q10000'); //dadosMock;
     var colunas: any = [];
     var respostas: any = [];
 
-    sheets.forEach(sheet => {
-        if(count == 0){
-            sheet.forEach(item => { header.push(item) });
-        }else if(count == 1){
-            sheet.forEach(item => { colunas.push(item) });
-        }else{
-            respostas.push(sheet)
-        }
-        count++;
+    sheets.forEach((sheet, i) => {
+        i == 0 ?
+        sheet.forEach(item => { colunas.push(item) }) :
+        respostas.push(sheet);
     })
 
-    db.classificacaoFindByIdSheet(header[0] as number).then((classificacoes) => {
+    db.classificacaoFindByIdSheet(spreadsheetId).then((classificacoes) => {
         if(classificacoes.length == 0){
             setNewClassificacao(0);
         }else{
@@ -65,11 +78,8 @@ export const setClassificacao = async (req: Request, res: Response) => {
     };
 
     const getHeader = async (classificacao:IClassificacao) => {
-        header.forEach((item, i) => {
-            i == 0 ? 
-            classificacao.idSheet = item as number: 
-            classificacao.nmSheet = item as string;
-        })
+        classificacao.idSheet = parametros.idSheet;
+        classificacao.nmSheet = parametros.nmSheet;
     };
 
     const getColunas = async (classificacao:IClassificacao) => {
@@ -180,13 +190,13 @@ export const getColunas = async (req: Request, res: Response) => {
 export const getComentarios = async (req: Request, res: Response) => {
 
     let parametros = {
-        idSheet: 1997890537,
+        spreadsheetId: '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ',
         idResposta: 'jean@eficilog.com'
     };
 
     let comentarios = [];
 
-    db.classificacaoFindByIdSheet(parametros.idSheet).then((classificacoes) => {
+    db.classificacaoFindByIdSheet(parametros.spreadsheetId).then((classificacoes) => {
         if(classificacoes.length > 0){
             classificacoes.forEach(classificacao => {
                 if(classificacao.comentarios.length > 0){

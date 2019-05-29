@@ -1,7 +1,7 @@
 export interface IClassificacao {
 
     _id?: any
-    idSheet: number,
+    idSheet: string,
     nmSheet: string,
     version: number,
     colunas: {
@@ -33,7 +33,7 @@ export interface IClassificacao {
 export class Classificacao implements IClassificacao {
 
     _id?: any
-    idSheet = 0;
+    idSheet = '';
     nmSheet = '';
     version = 0;
     colunas: {
