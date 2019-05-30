@@ -33,9 +33,11 @@ export const setClassificacao = async (req: Request, res: Response) => {
 
     let parametros: {idSheet: string, nmSheet: string} = res.body
 
-    var sheets = await sheet.getSpreedsheet(parametros.idSheet, 'A1:Q10000'); //dadosMock;
+    var sheets = await sheet.getSpreedsheet(parametros.idSheet, 'A1:ZZZZ1000000'); //dadosMock;
     var colunas: any = [];
     var respostas: any = [];
+
+    console.log(sheets)
 
     sheets.forEach((sheet, i) => {
         i == 0 ?
@@ -238,42 +240,59 @@ export const setComentarios = async (req: Request, res: Response) => {
             let classificacao = classificacoes[0];
             comentario.side = undefined;
 
-            if(classificacao.comentarios.length > 0){
-                let flcomentario = false;
+            let flcomentario = false;
 
-                let idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map((maxCom) => { 
-                    return maxCom.idComentario; 
-                }))
+            let idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map((maxCom) => { 
+                return maxCom.idComentario; 
+            }))
 
-                classificacao.comentarios.forEach(dbcomentario => {
-                    if(dbcomentario.idComentario == comentario.idComentario &&
-                        dbcomentario.idResposta == comentario.idResposta &&
-                        dbcomentario.idColuna == comentario.idColuna){
+            classificacao.comentarios.forEach(dbcomentario => {
+                if(dbcomentario.idComentario == comentario.idComentario &&
+                    dbcomentario.idResposta == comentario.idResposta &&
+                    dbcomentario.idColuna == comentario.idColuna){
 
-                        dbcomentario.descricao = comentario.descricao;
-                        dbcomentario.status = comentario.status;
-                        dbcomentario.dataAtualizacao = new Date();
-                        flcomentario = true;
-                    }
-                })
-
-                if(flcomentario){
-                    db.classificacaoUpdate(classificacao);
-                }else{
-                    comentario.idComentario = ++idComentarioMax;
-                    classificacao.comentarios.push(comentario);
-                    db.classificacaoUpdate(classificacao);
+                    dbcomentario.descricao = comentario.descricao;
+                    dbcomentario.status = comentario.status;
+                    dbcomentario.dataAtualizacao = new Date();
+                    flcomentario = true;
                 }
+            })
+
+            if(flcomentario){
+                db.classificacaoUpdate(classificacao);
             }else{
-                comentario.idComentario = 0;
+                idComentarioMax == 0 ?
+                comentario.idComentario = idComentarioMax :
+                comentario.idComentario = ++idComentarioMax;
+
                 classificacao.comentarios.push(comentario);
                 db.classificacaoUpdate(classificacao);
             }
-            
+
+            googleNotes(classificacao)
             res.send([classificacao]);
 
         }).catch(function(e) {
             console.log(e);
         })
     })
+
+    const googleNotes = async (classificacao:IClassificacao) => {
+
+        classificacao.comentarios.forEach(comentario => {
+            comentario
+        })
+
+        let parametro: {
+            sheetId:number, 
+            startRowIndex:number, 
+            endRowIndex:number,
+            startColumnIndex:number,
+            endColumnIndex:number,
+            note:string
+        }
+
+        sheet.setSpreedsheetNotes(parametro)
+        res.sendStatus(200)
+    }
 }

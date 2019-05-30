@@ -73,11 +73,12 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
         switch (_a.label) {
             case 0:
                 parametros = res.body;
-                return [4 /*yield*/, sheet.getSpreedsheet(parametros.idSheet, 'A1:Q10000')];
+                return [4 /*yield*/, sheet.getSpreedsheet(parametros.idSheet, 'A1:ZZZZ1000000')];
             case 1:
                 sheets = _a.sent();
                 colunas = [];
                 respostas = [];
+                console.log(sheets);
                 sheets.forEach(function (sheet, i) {
                     i == 0 ?
                         sheet.forEach(function (item) { colunas.push(item); }) :
@@ -264,47 +265,55 @@ exports.getComentarios = function (req, res) { return __awaiter(_this, void 0, v
     });
 }); };
 exports.setComentarios = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var comentarios;
+    var comentarios, googleNotes;
+    var _this = this;
     return __generator(this, function (_a) {
         comentarios = req.body;
         comentarios.forEach(function (comentario) {
             db.classificacaoFindByIdSheetAndVersion(comentario.idSheet, comentario.sheetVersao).then(function (classificacoes) {
                 var classificacao = classificacoes[0];
                 comentario.side = undefined;
-                if (classificacao.comentarios.length > 0) {
-                    var flcomentario_1 = false;
-                    var idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map(function (maxCom) {
-                        return maxCom.idComentario;
-                    }));
-                    classificacao.comentarios.forEach(function (dbcomentario) {
-                        if (dbcomentario.idComentario == comentario.idComentario &&
-                            dbcomentario.idResposta == comentario.idResposta &&
-                            dbcomentario.idColuna == comentario.idColuna) {
-                            dbcomentario.descricao = comentario.descricao;
-                            dbcomentario.status = comentario.status;
-                            dbcomentario.dataAtualizacao = new Date();
-                            flcomentario_1 = true;
-                        }
-                    });
-                    if (flcomentario_1) {
-                        db.classificacaoUpdate(classificacao);
+                var flcomentario = false;
+                var idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map(function (maxCom) {
+                    return maxCom.idComentario;
+                }));
+                classificacao.comentarios.forEach(function (dbcomentario) {
+                    if (dbcomentario.idComentario == comentario.idComentario &&
+                        dbcomentario.idResposta == comentario.idResposta &&
+                        dbcomentario.idColuna == comentario.idColuna) {
+                        dbcomentario.descricao = comentario.descricao;
+                        dbcomentario.status = comentario.status;
+                        dbcomentario.dataAtualizacao = new Date();
+                        flcomentario = true;
                     }
-                    else {
-                        comentario.idComentario = ++idComentarioMax;
-                        classificacao.comentarios.push(comentario);
-                        db.classificacaoUpdate(classificacao);
-                    }
+                });
+                if (flcomentario) {
+                    db.classificacaoUpdate(classificacao);
                 }
                 else {
-                    comentario.idComentario = 0;
+                    idComentarioMax == 0 ?
+                        comentario.idComentario = idComentarioMax :
+                        comentario.idComentario = ++idComentarioMax;
                     classificacao.comentarios.push(comentario);
                     db.classificacaoUpdate(classificacao);
                 }
+                googleNotes(classificacao);
                 res.send([classificacao]);
             }).catch(function (e) {
                 console.log(e);
             });
         });
+        googleNotes = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
+            var parametro;
+            return __generator(this, function (_a) {
+                classificacao.comentarios.forEach(function (comentario) {
+                    comentario;
+                });
+                sheet.setSpreedsheetNotes(parametro);
+                res.sendStatus(200);
+                return [2 /*return*/];
+            });
+        }); };
         return [2 /*return*/];
     });
 }); };

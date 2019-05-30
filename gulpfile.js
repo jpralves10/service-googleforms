@@ -52,9 +52,9 @@ gulp.task('watch', function() {
  * description: start the development environment
  */
 gulp.task('default', function() {
-    gulp.task('typescript')()
-    gulp.task('server')()
-    gulp.task('watch')()
+    gulp.task('typescript')();
+    gulp.task('server')();
+    gulp.task('watch')();
 
     // Need to watch for sass changes too? Just add another watch call!
     // no more messing around with grunt-concurrent or the like. Gulp is

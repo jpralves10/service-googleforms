@@ -54,87 +54,139 @@ var scopes = [
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/calendar'
 ];
-exports.getSpreedsheet = function (spreadsheetId, range) { return __awaiter(_this, void 0, void 0, function () {
-    var googleAuth;
+exports.getGoogleAuth = function () { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, googleapis_1.google.auth.getClient({
                     credentials: credentials,
                     scopes: scopes
+                }).then(function (response) {
+                    return response;
                 })];
-            case 1:
-                googleAuth = _a.sent();
-                return [4 /*yield*/, sheets.spreadsheets.values.get({
-                        auth: googleAuth,
-                        spreadsheetId: spreadsheetId,
-                        range: range
-                    }).then(function (response) {
-                        return response.data.values;
-                    })];
+            case 1: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.getParamsResource = function (spreadsheetId, range) { return __awaiter(_this, void 0, void 0, function () {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _a = {};
+                return [4 /*yield*/, exports.getGoogleAuth()];
+            case 1: return [2 /*return*/, (_a.auth = _b.sent(),
+                    _a.spreadsheetId = spreadsheetId,
+                    _a.range = range,
+                    _a)];
+        }
+    });
+}); };
+exports.getSpreedsheet = function (spreadsheetId, range) { return __awaiter(_this, void 0, void 0, function () {
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                _b = (_a = sheets.spreadsheets.values).get;
+                return [4 /*yield*/, exports.getParamsResource(spreadsheetId, range)];
+            case 1: return [4 /*yield*/, _b.apply(_a, [_c.sent()]).then(function (response) {
+                    return response.data.values;
+                })];
             case 2: 
             //let range = 'A1:Q10000'
-            return [2 /*return*/, _a.sent()];
+            return [2 /*return*/, _c.sent()];
         }
     });
 }); };
 exports.getSpreedsheetHeader = function (spreadsheetId, range) { return __awaiter(_this, void 0, void 0, function () {
-    var googleAuth;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, googleapis_1.google.auth.getClient({
-                    credentials: credentials,
-                    scopes: scopes
-                })];
-            case 1:
-                googleAuth = _a.sent();
-                //let range = 'A1:Q1'
-                sheets.spreadsheets.values.get({
-                    auth: googleAuth,
-                    spreadsheetId: spreadsheetId,
-                    range: range
-                }, function sheetReturn(err, response) {
-                    return __awaiter(this, void 0, void 0, function () {
-                        return __generator(this, function (_a) {
-                            if (err) {
-                                return [2 /*return*/, []];
-                            }
-                            else {
-                                return [2 /*return*/, response.data.values];
-                            }
-                            return [2 /*return*/];
-                        });
-                    });
+        //let range = 'A1:Q1'
+        sheets.spreadsheets.values.get(this.getParamsResource(spreadsheetId, range), function sheetReturn(err, response) {
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    if (err) {
+                        return [2 /*return*/, []];
+                    }
+                    else {
+                        return [2 /*return*/, response.data.values];
+                    }
+                    return [2 /*return*/];
                 });
+            });
+        });
+        return [2 /*return*/];
+    });
+}); };
+exports.setSpreedsheetEmail = function (spreadsheetId, range, values) { return __awaiter(_this, void 0, void 0, function () {
+    var _a, _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
+            case 0:
+                /*
+                range: 'B2:B4',
+                values: [['jpralves10@gmail.com', 'jean@eficilog.com', 'teste@eficilog.com']]
+                */
+                _b = (_a = sheets.spreadsheets.values).batchUpdate;
+                _c = {};
+                return [4 /*yield*/, exports.getGoogleAuth()];
+            case 1:
+                /*
+                range: 'B2:B4',
+                values: [['jpralves10@gmail.com', 'jean@eficilog.com', 'teste@eficilog.com']]
+                */
+                _b.apply(_a, [(_c.auth = _d.sent(),
+                        _c.spreadsheetId = spreadsheetId,
+                        _c.requestBody = {
+                            valueInputOption: 'USER_ENTERED',
+                            data: [{
+                                    majorDimension: 'COLUMNS',
+                                    range: range,
+                                    values: [values]
+                                }]
+                        },
+                        _c), function (err, response) {
+                        err ?
+                            console.log('The API returned an error: ' + err) :
+                            response.status == 200 ? true : false;
+                    }]);
                 return [2 /*return*/];
         }
     });
 }); };
-exports.setSpreedsheetEmail = function (spreadsheetId, range, values) { return __awaiter(_this, void 0, void 0, function () {
-    var googleAuth;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, googleapis_1.google.auth.getClient({
-                    credentials: credentials,
-                    scopes: scopes
-                })];
+exports.setSpreedsheetNotes = function (parametro) { return __awaiter(_this, void 0, void 0, function () {
+    var spreadsheetId, _a, _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
+            case 0:
+                spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
+                _b = (_a = sheets.spreadsheets).batchUpdate;
+                _c = {};
+                return [4 /*yield*/, exports.getGoogleAuth()];
             case 1:
-                googleAuth = _a.sent();
-                sheets.spreadsheets.values.batchUpdate({
-                    auth: googleAuth,
-                    spreadsheetId: spreadsheetId,
-                    requestBody: {
-                        valueInputOption: 'USER_ENTERED',
-                        data: [{
-                                majorDimension: 'COLUMNS',
-                                range: range,
-                                values: [values]
-                            }]
-                    }
-                }, function (err, response) {
-                    err ?
-                        console.log('The API returned an error: ' + err) :
-                        response.status == 200 ? true : false;
-                });
+                _b.apply(_a, [(_c.auth = _d.sent(),
+                        _c.spreadsheetId = spreadsheetId,
+                        _c.requestBody = {
+                            includeSpreadsheetInResponse: false,
+                            requests: [{
+                                    repeatCell: {
+                                        range: {
+                                            sheetId: parametro.sheetId,
+                                            startRowIndex: parametro.startRowIndex,
+                                            endRowIndex: parametro.endRowIndex,
+                                            startColumnIndex: parametro.startColumnIndex,
+                                            endColumnIndex: parametro.endColumnIndex
+                                        },
+                                        cell: {
+                                            note: parametro.note
+                                        },
+                                        fields: 'note'
+                                    }
+                                }]
+                        },
+                        _c), function (err, response) {
+                        err ?
+                            console.log('The API returned an error: ' + err) :
+                            response.status == 200 ? true : false;
+                    }]);
                 return [2 /*return*/];
         }
     });
