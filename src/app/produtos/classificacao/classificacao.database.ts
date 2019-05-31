@@ -3,21 +3,26 @@ import {
     classificacaoCollection
 } from '../../../database/mongodb';
 
-import { Classificacao, IClassificacao } from '../../../models/classificacao';
+import { IClassificacao } from '../../../models/classificacao';
 
 // Classificacao
 
-export const classificacaoFindByIdSheet = async (idSheet:string) => {
+export const classificacaoFindBySpreadsheetId = async (spreadsheetId:string) => {
+    const col = await classificacaoCollection;
+    return await col.find({spreadsheetId: spreadsheetId}).toArray() as IClassificacao[];
+}
+
+export const classificacaoFindByidSheet = async (idSheet:number) => {
     const col = await classificacaoCollection;
     return await col.find({idSheet: idSheet}).toArray() as IClassificacao[];
 }
 
-export const classificacaoFindByIdSheetAndVersion = async (idSheet:number, version:number) => {
+export const classificacaoFindByIdSheetAndVersion = async (idSheet:string, version:number) => {
     const col = await classificacaoCollection;
     return await col.find({idSheet: idSheet, version:version}).toArray() as IClassificacao[];
 }
 
-export const classificacaoSave = async (classificacao:Classificacao) => {
+export const classificacaoSave = async (classificacao:IClassificacao) => {
     const col = await classificacaoCollection;
     await col.insertOne(classificacao).then(() => {
         return true;
@@ -27,7 +32,7 @@ export const classificacaoSave = async (classificacao:Classificacao) => {
     });
 }
 
-export const classificacaoUpdate = async (classificacao:Classificacao) => {
+export const classificacaoUpdate = async (classificacao:IClassificacao) => {
     const col = await classificacaoCollection;
 
     var query = {idSheet: classificacao.idSheet};

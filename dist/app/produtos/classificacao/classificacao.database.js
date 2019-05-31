@@ -39,7 +39,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //import { ObjectId } from 'bson';
 var mongodb_1 = require("../../../database/mongodb");
 // Classificacao
-exports.classificacaoFindByIdSheet = function (idSheet) { return __awaiter(_this, void 0, void 0, function () {
+exports.classificacaoFindBySpreadsheetId = function (spreadsheetId) { return __awaiter(_this, void 0, void 0, function () {
+    var col;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
+            case 1:
+                col = _a.sent();
+                return [4 /*yield*/, col.find({ spreadsheetId: spreadsheetId }).toArray()];
+            case 2: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.classificacaoFindByidSheet = function (idSheet) { return __awaiter(_this, void 0, void 0, function () {
     var col;
     return __generator(this, function (_a) {
         switch (_a.label) {

@@ -10,6 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
 var CatalogoController = __importStar(require("./catalogo/catalogo.controller"));
 var ClassificacaoController = __importStar(require("./classificacao/classificacao.controller"));
+//import * as GoogleAuth from './classificacao/classificacao.sheet';
 var router = express_1.Router();
 router.post('/filtro/catalogo', CatalogoController.filtro);
 router.get('/comentario/find', ClassificacaoController.getComentarios);

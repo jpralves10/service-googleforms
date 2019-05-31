@@ -43,7 +43,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var classificacao_1 = require("../../../models/classificacao");
 var db = __importStar(require("./classificacao.database"));
 var sheet = __importStar(require("./classificacao.sheet"));
 var spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
@@ -53,12 +52,12 @@ exports.setClassificacaoEmail = function (req, res) { return __awaiter(_this, vo
     var parametros;
     return __generator(this, function (_a) {
         parametros = res.body;
-        db.classificacaoFindByIdSheet(parametros.idSheet).then(function (classificacoes) {
+        db.classificacaoFindBySpreadsheetId(parametros.spreadsheetId).then(function (classificacoes) {
             if (classificacoes.length > 0) {
                 classificacoes.forEach(function (classificacao) {
                     var qtdRespostas = classificacao.respostas.length;
                     var range = 'B' + qtdRespostas + ':' + 'B' + qtdRespostas;
-                    sheet.setSpreedsheetEmail(parametros.idSheet, range, [parametros.idResposta]) ?
+                    sheet.setSpreedsheetEmail(parametros.spreadsheetId, range, [parametros.idResposta]) ?
                         res.send('200') : res.send('400');
                 });
             }
@@ -72,19 +71,22 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                parametros = res.body;
-                return [4 /*yield*/, sheet.getSpreedsheet(parametros.idSheet, 'A1:ZZZZ1000000')];
+                parametros = {
+                    spreadsheetId: spreadsheetId,
+                    idSheet: 1997890537,
+                    nmSheet: 'FORMULÁRIO NCM - HCX CONSULTORIA'
+                };
+                return [4 /*yield*/, sheet.getSpreedsheet(parametros.spreadsheetId, 'A1:ZZZ100000')];
             case 1:
                 sheets = _a.sent();
                 colunas = [];
                 respostas = [];
-                console.log(sheets);
                 sheets.forEach(function (sheet, i) {
                     i == 0 ?
                         sheet.forEach(function (item) { colunas.push(item); }) :
                         respostas.push(sheet);
                 });
-                db.classificacaoFindByIdSheet(spreadsheetId).then(function (classificacoes) {
+                db.classificacaoFindBySpreadsheetId(parametros.spreadsheetId).then(function (classificacoes) {
                     if (classificacoes.length == 0) {
                         setNewClassificacao(0);
                     }
@@ -112,17 +114,19 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                 setNewClassificacao = function (version) { return __awaiter(_this, void 0, void 0, function () {
                     var classificacao;
                     return __generator(this, function (_a) {
-                        classificacao = new classificacao_1.Classificacao();
+                        classificacao = {};
                         classificacao.version = version;
                         getHeader(classificacao);
                         getColunas(classificacao);
                         getRespostas(classificacao);
+                        classificacao.comentarios = [];
                         db.classificacaoSave(classificacao);
                         return [2 /*return*/];
                     });
                 }); };
                 getHeader = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
                     return __generator(this, function (_a) {
+                        classificacao.spreadsheetId = parametros.spreadsheetId;
                         classificacao.idSheet = parametros.idSheet;
                         classificacao.nmSheet = parametros.nmSheet;
                         return [2 /*return*/];
@@ -130,6 +134,7 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                 }); };
                 getColunas = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
                     return __generator(this, function (_a) {
+                        classificacao.colunas = [];
                         colunas.forEach(function (item, i) {
                             classificacao.colunas.push({
                                 'idColuna': i,
@@ -141,6 +146,7 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                 }); };
                 getRespostas = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
                     return __generator(this, function (_a) {
+                        classificacao.respostas = [];
                         respostas.forEach(function (resposta) {
                             var campos = [];
                             var campo;
@@ -198,7 +204,7 @@ exports.getClassificacao = function (req, res) { return __awaiter(_this, void 0,
     var classificacao;
     return __generator(this, function (_a) {
         classificacao = req.body;
-        db.classificacaoFindByIdSheet(classificacao.idSheet).then(function (classificacoes) {
+        db.classificacaoFindBySpreadsheetId(classificacao.spreadsheetId).then(function (classificacoes) {
             if (classificacoes.length > 0) {
                 res.send(classificacoes);
             }
@@ -217,7 +223,7 @@ exports.getColunas = function (req, res) { return __awaiter(_this, void 0, void 
     return __generator(this, function (_a) {
         parametros = req.body;
         console.log(parametros);
-        db.classificacaoFindByIdSheet(parametros.idSheet).then(function (classificacoes) {
+        db.classificacaoFindBySpreadsheetId(parametros.spreadsheetId).then(function (classificacoes) {
             if (classificacoes.length > 0) {
                 classificacoes.forEach(function (classificacao) {
                     if (classificacao.colunas.length > 0) {
@@ -241,10 +247,11 @@ exports.getComentarios = function (req, res) { return __awaiter(_this, void 0, v
     return __generator(this, function (_a) {
         parametros = {
             spreadsheetId: '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ',
+            idSheet: 1997890537,
             idResposta: 'jean@eficilog.com'
         };
         comentarios = [];
-        db.classificacaoFindByIdSheet(parametros.spreadsheetId).then(function (classificacoes) {
+        db.classificacaoFindBySpreadsheetId(parametros.spreadsheetId).then(function (classificacoes) {
             if (classificacoes.length > 0) {
                 classificacoes.forEach(function (classificacao) {
                     if (classificacao.comentarios.length > 0) {
@@ -265,49 +272,81 @@ exports.getComentarios = function (req, res) { return __awaiter(_this, void 0, v
     });
 }); };
 exports.setComentarios = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var comentarios, googleNotes;
+    var comentarios, comentario_1, googleNotes;
     var _this = this;
     return __generator(this, function (_a) {
+        /*let comentarios = [{
+            idSheet: 1997890537,
+            idComentario: null,
+            idResposta: 'jean@eficilog.com',
+            idColuna: 3,
+            idUsuario: 'jean@eficilog.com',
+            nmUsuario: 'Jean Alves',
+            descricao: "Teste do caompo: 'Mercadoria completa'",
+            status: 'Pendente',
+            dataCriacao: new Date(),
+            dataAtualizacao: new Date()
+        }]*/
+        console.log('Coment: ', req.body);
         comentarios = req.body;
-        comentarios.forEach(function (comentario) {
-            db.classificacaoFindByIdSheetAndVersion(comentario.idSheet, comentario.sheetVersao).then(function (classificacoes) {
+        //let classificacao;
+        //comentarios.forEach(comentario => {
+        if (comentarios.length > 0) {
+            comentario_1 = comentarios[0];
+            db.classificacaoFindByIdSheetAndVersion(comentario_1.idSheet, comentario_1.sheetVersao).then(function (classificacoes) {
                 var classificacao = classificacoes[0];
-                comentario.side = undefined;
+                comentario_1.side = undefined;
                 var flcomentario = false;
                 var idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map(function (maxCom) {
                     return maxCom.idComentario;
                 }));
                 classificacao.comentarios.forEach(function (dbcomentario) {
-                    if (dbcomentario.idComentario == comentario.idComentario &&
-                        dbcomentario.idResposta == comentario.idResposta &&
-                        dbcomentario.idColuna == comentario.idColuna) {
-                        dbcomentario.descricao = comentario.descricao;
-                        dbcomentario.status = comentario.status;
+                    if (dbcomentario.idComentario == comentario_1.idComentario &&
+                        dbcomentario.idResposta == comentario_1.idResposta &&
+                        dbcomentario.idColuna == comentario_1.idColuna) {
+                        dbcomentario.descricao = comentario_1.descricao;
+                        dbcomentario.status = comentario_1.status;
                         dbcomentario.dataAtualizacao = new Date();
                         flcomentario = true;
                     }
                 });
                 if (flcomentario) {
+                    console.log('A', idComentarioMax);
                     db.classificacaoUpdate(classificacao);
                 }
                 else {
-                    idComentarioMax == 0 ?
-                        comentario.idComentario = idComentarioMax :
-                        comentario.idComentario = ++idComentarioMax;
-                    classificacao.comentarios.push(comentario);
+                    console.log('B', idComentarioMax);
+                    if (idComentarioMax == undefined || idComentarioMax == null || idComentarioMax == 0) {
+                        idComentarioMax = 0;
+                        comentario_1.idComentario = idComentarioMax;
+                    }
+                    else {
+                        comentario_1.idComentario = ++idComentarioMax;
+                    }
+                    //idComentarioMax == 0 ? comentario.idComentario = idComentarioMax :  comentario.idComentario = ++idComentarioMax;
+                    classificacao.comentarios.push(comentario_1);
                     db.classificacaoUpdate(classificacao);
                 }
-                googleNotes(classificacao);
+                //console.log('Classificacao', classificacao)
+                //googleNotes(classificacao)
                 res.send([classificacao]);
             }).catch(function (e) {
                 console.log(e);
             });
-        });
+        }
+        else {
+            res.send([]);
+        }
+        //})
+        comentarios = undefined;
         googleNotes = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
             var parametro;
             return __generator(this, function (_a) {
                 classificacao.comentarios.forEach(function (comentario) {
                     comentario;
+                });
+                classificacao.respostas.forEach(function (resposta) {
+                    (resposta.idResposta);
                 });
                 sheet.setSpreedsheetNotes(parametro);
                 res.sendStatus(200);

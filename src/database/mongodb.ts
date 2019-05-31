@@ -1,8 +1,8 @@
 import mongo from 'mongodb';
 import { MONGODB_CONNECTIONSTRING } from '../config/credentials';
 
-import { Produto } from '../models/produtos';
-import { Classificacao } from '../models/classificacao';
+import { IProduto } from '../models/produtos';
+import { IClassificacao } from '../models/classificacao';
 
 export const connection = mongo.connect(MONGODB_CONNECTIONSTRING, {
   useNewUrlParser: true
@@ -13,13 +13,13 @@ export const crawlerDB = connection.then(conn => conn.db('crawler') || conn.db('
 /* Collections */
 
 export const produtosCollection = crawlerDB.then(db =>
-    db.collection<Produto>('produtos')
+    db.collection<IProduto>('produtos')
 );
 
 export const integradosCollection = crawlerDB.then(db =>
-    db.collection<Produto>('produtosIntegrados')
+    db.collection<IProduto>('produtosIntegrados')
 );
 
 export const classificacaoCollection = crawlerDB.then(db =>
-    db.collection<Classificacao>('classificacao')
+    db.collection<IClassificacao>('classificacao')
 );

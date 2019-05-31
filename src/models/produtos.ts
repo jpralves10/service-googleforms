@@ -1,13 +1,13 @@
-export interface Atributo {
+export interface IAtributo {
     atributo: string;
     valor: string;
 }
 
-export interface CodigoInterno {
+export interface ICodigoInterno {
     valor: string;
 }
 
-export interface Compatibilidade {
+export interface ICompatibilidade {
     similaridade: number;
     identicos: number;
 
@@ -17,7 +17,7 @@ export interface Compatibilidade {
     cinza: number;
 }
 
-export interface Declaracao {
+export interface IDeclaracao {
     numeroDI: string;
     dataRegistro: Date;
     importadorNome: string;
@@ -26,7 +26,7 @@ export interface Declaracao {
     canal: string;
 }
 
-export interface Produto {
+export interface IProduto {
 
     /** Controle Interno **/
     _id: string;
@@ -43,11 +43,11 @@ export interface Produto {
     canal: string;
 
     // lista caso estejam unidos
-    declaracoes?: Declaracao[];
+    declaracoes?: IDeclaracao[];
 
     /** Versões Produto **/
-    versoesProduto: Produto[];
-    compatibilidade: Compatibilidade;
+    versoesProduto: IProduto[];
+    compatibilidade: ICompatibilidade;
 
     /** Histórico **/
     dataCriacao: Date;
@@ -70,6 +70,6 @@ export interface Produto {
     fabricanteConhecido: boolean;
     cpfCnpjFabricante: string;
     codigoOperadorEstrangeiro: string;
-    atributos: Array<Atributo>;
+    atributos: Array<IAtributo>;
     codigosInterno: Array<string>;
 }
