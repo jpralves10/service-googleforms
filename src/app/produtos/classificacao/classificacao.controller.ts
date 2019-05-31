@@ -268,10 +268,9 @@ export const setComentarios = async (req: Request, res: Response) => {
             comentario.side = undefined;
 
             let flcomentario = false;
+            let idComentarioMax;
 
-            let idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map((maxCom) => { 
-                return maxCom.idComentario; 
-            }))
+            idComentarioMax = getIdComentario(classificacao);
 
             classificacao.comentarios.forEach(dbcomentario => {
                 if(dbcomentario.idComentario == comentario.idComentario &&
@@ -286,20 +285,9 @@ export const setComentarios = async (req: Request, res: Response) => {
             })
 
             if(flcomentario){
-                console.log('A', idComentarioMax)
                 db.classificacaoUpdate(classificacao);
             }else{
-                console.log('B', idComentarioMax)
-
-                if(idComentarioMax == undefined || idComentarioMax == null || idComentarioMax == 0){
-                    idComentarioMax = 0;
-                    comentario.idComentario = idComentarioMax
-                }else{
-                    comentario.idComentario = ++idComentarioMax
-                }
-
-                //idComentarioMax == 0 ? comentario.idComentario = idComentarioMax :  comentario.idComentario = ++idComentarioMax;
-
+                comentario.idComentario = idComentarioMax;
                 classificacao.comentarios.push(comentario);
                 db.classificacaoUpdate(classificacao);
             }
@@ -317,7 +305,16 @@ export const setComentarios = async (req: Request, res: Response) => {
     }
     //})
 
-    comentarios = undefined;
+    const getIdComentario = async (classificacao:IClassificacao) => {
+        if(classificacao.comentarios.length > 0){
+            let idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map((maxCom) => { 
+                return maxCom.idComentario; 
+            }))
+            return ++idComentarioMax;
+        }else{
+            return 0;
+        }
+    }
 
     const googleNotes = async (classificacao:IClassificacao) => {
 

@@ -4,10 +4,9 @@ export const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD || 'eficimaestro';
 export const MONGODB_AUTHDB = process.env.MONGODB_AUTHDB || 'crawler';
 
 //https://www.youtube.com/watch?v=cRbf_33Rdo4
-//console.log("MONGODB_URI: ", process.env.MONGODB_URI)
+
+console.log("MONGODB_URI: ", process.env.MONGODB_URI)
 
 const URI = `mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${MONGODB_AUTHDB}`;
-
-console.log(process.env.MONGODB_URI) 
 
 export const MONGODB_CONNECTIONSTRING = process.env.MONGODB_URI || URI

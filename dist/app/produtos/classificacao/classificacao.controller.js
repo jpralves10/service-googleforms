@@ -272,7 +272,7 @@ exports.getComentarios = function (req, res) { return __awaiter(_this, void 0, v
     });
 }); };
 exports.setComentarios = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var comentarios, comentario_1, googleNotes;
+    var comentarios, comentario_1, getIdComentario, googleNotes;
     var _this = this;
     return __generator(this, function (_a) {
         /*let comentarios = [{
@@ -297,9 +297,8 @@ exports.setComentarios = function (req, res) { return __awaiter(_this, void 0, v
                 var classificacao = classificacoes[0];
                 comentario_1.side = undefined;
                 var flcomentario = false;
-                var idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map(function (maxCom) {
-                    return maxCom.idComentario;
-                }));
+                var idComentarioMax;
+                idComentarioMax = getIdComentario(classificacao);
                 classificacao.comentarios.forEach(function (dbcomentario) {
                     if (dbcomentario.idComentario == comentario_1.idComentario &&
                         dbcomentario.idResposta == comentario_1.idResposta &&
@@ -311,19 +310,10 @@ exports.setComentarios = function (req, res) { return __awaiter(_this, void 0, v
                     }
                 });
                 if (flcomentario) {
-                    console.log('A', idComentarioMax);
                     db.classificacaoUpdate(classificacao);
                 }
                 else {
-                    console.log('B', idComentarioMax);
-                    if (idComentarioMax == undefined || idComentarioMax == null || idComentarioMax == 0) {
-                        idComentarioMax = 0;
-                        comentario_1.idComentario = idComentarioMax;
-                    }
-                    else {
-                        comentario_1.idComentario = ++idComentarioMax;
-                    }
-                    //idComentarioMax == 0 ? comentario.idComentario = idComentarioMax :  comentario.idComentario = ++idComentarioMax;
+                    comentario_1.idComentario = idComentarioMax;
                     classificacao.comentarios.push(comentario_1);
                     db.classificacaoUpdate(classificacao);
                 }
@@ -337,8 +327,21 @@ exports.setComentarios = function (req, res) { return __awaiter(_this, void 0, v
         else {
             res.send([]);
         }
-        //})
-        comentarios = undefined;
+        getIdComentario = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
+            var idComentarioMax;
+            return __generator(this, function (_a) {
+                if (classificacao.comentarios.length > 0) {
+                    idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map(function (maxCom) {
+                        return maxCom.idComentario;
+                    }));
+                    return [2 /*return*/, ++idComentarioMax];
+                }
+                else {
+                    return [2 /*return*/, 0];
+                }
+                return [2 /*return*/];
+            });
+        }); };
         googleNotes = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
             var parametro;
             return __generator(this, function (_a) {
