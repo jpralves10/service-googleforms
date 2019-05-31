@@ -39,7 +39,7 @@ export const setClassificacao = async (req: Request, res: Response) => {
         nmSheet: 'FORMULÁRIO NCM - HCX CONSULTORIA'
     };
 
-    var sheets = dadosMock; //await sheet.getSpreedsheet(parametros.spreadsheetId, 'A1:ZZZ100000'); //dadosMock;
+    var sheets = await sheet.getSpreedsheet(parametros.spreadsheetId, 'A1:ZZZ100000'); //dadosMock;
     var colunas: any = [];
     var respostas: any = [];
 
@@ -49,7 +49,7 @@ export const setClassificacao = async (req: Request, res: Response) => {
         respostas.push(sheet);
     })
 
-    db.classificacaoFindBySpreadsheetId(parametros.spreadsheetId).then((classificacoes) => {
+    db.classificacaoFindByidSheet(parametros.idSheet).then((classificacoes) => {
         if(classificacoes.length == 0){
             setNewClassificacao(0);
         }else{
