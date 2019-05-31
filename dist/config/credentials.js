@@ -7,4 +7,5 @@ exports.MONGODB_AUTHDB = process.env.MONGODB_AUTHDB || 'crawler';
 //https://www.youtube.com/watch?v=cRbf_33Rdo4
 //console.log("MONGODB_URI: ", process.env.MONGODB_URI)
 var URI = "mongodb://" + exports.MONGODB_USER + ":" + exports.MONGODB_PASSWORD + "@" + exports.MONGODB_HOST + "/" + exports.MONGODB_AUTHDB;
+console.log(process.env.MONGODB_URI);
 exports.MONGODB_CONNECTIONSTRING = process.env.MONGODB_URI || URI;

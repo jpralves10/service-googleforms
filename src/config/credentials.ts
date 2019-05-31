@@ -8,4 +8,6 @@ export const MONGODB_AUTHDB = process.env.MONGODB_AUTHDB || 'crawler';
 
 const URI = `mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${MONGODB_AUTHDB}`;
 
+console.log(process.env.MONGODB_URI) 
+
 export const MONGODB_CONNECTIONSTRING = process.env.MONGODB_URI || URI
