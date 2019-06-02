@@ -76,7 +76,7 @@ server.use(function (err, req, res, next) { res.status(500).json(err); });
 // Server Start
 //-----------------------------------------
 server.listen(process.env.PORT || 3443, function () {
-    console.log('Server is running on http://localhost:3443');
+    console.log('Server is running on http://localhost:3443 || ' + process.env.PORT);
 })
     .on('error', function (err) { return console.log(err); });
 //-----------------------------------------
