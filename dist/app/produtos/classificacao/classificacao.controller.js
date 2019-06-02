@@ -105,12 +105,9 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                 }).catch(function (e) {
                     console.log(e);
                 });
-                setSortClassificacoes = function (classificacoes) { return __awaiter(_this, void 0, void 0, function () {
-                    return __generator(this, function (_a) {
-                        classificacoes.sort(function (a, b) { return a.version > b.version ? 1 : -1; });
-                        return [2 /*return*/];
-                    });
-                }); };
+                setSortClassificacoes = function (classificacoes) {
+                    classificacoes.sort(function (a, b) { return a.version > b.version ? 1 : -1; });
+                };
                 setNewClassificacao = function (version) { return __awaiter(_this, void 0, void 0, function () {
                     var classificacao;
                     return __generator(this, function (_a) {
@@ -272,76 +269,56 @@ exports.getComentarios = function (req, res) { return __awaiter(_this, void 0, v
     });
 }); };
 exports.setComentarios = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var comentarios, comentario_1, getIdComentario, googleNotes;
+    var comentarios, getIdComentario, setSortComentarios, googleNotes;
     var _this = this;
     return __generator(this, function (_a) {
-        /*let comentarios = [{
-            idSheet: 1997890537,
-            idComentario: null,
-            idResposta: 'jean@eficilog.com',
-            idColuna: 3,
-            idUsuario: 'jean@eficilog.com',
-            nmUsuario: 'Jean Alves',
-            descricao: "Teste do caompo: 'Mercadoria completa'",
-            status: 'Pendente',
-            dataCriacao: new Date(),
-            dataAtualizacao: new Date()
-        }]*/
-        console.log('Coment: ', req.body);
         comentarios = req.body;
-        //let classificacao;
-        //comentarios.forEach(comentario => {
         if (comentarios.length > 0) {
-            comentario_1 = comentarios[0];
-            db.classificacaoFindByIdSheetAndVersion(comentario_1.idSheet, comentario_1.sheetVersao).then(function (classificacoes) {
-                var classificacao = classificacoes[0];
-                comentario_1.side = undefined;
-                var flcomentario = false;
-                var idComentarioMax;
-                idComentarioMax = getIdComentario(classificacao);
-                classificacao.comentarios.forEach(function (dbcomentario) {
-                    if (dbcomentario.idComentario == comentario_1.idComentario &&
-                        dbcomentario.idResposta == comentario_1.idResposta &&
-                        dbcomentario.idColuna == comentario_1.idColuna) {
-                        dbcomentario.descricao = comentario_1.descricao;
-                        dbcomentario.status = comentario_1.status;
-                        dbcomentario.dataAtualizacao = new Date();
-                        flcomentario = true;
+            comentarios.forEach(function (comentario) {
+                db.classificacaoFindByIdSheetAndVersion(comentario.idSheet, comentario.sheetVersao).then(function (classificacoes) {
+                    var classificacao = classificacoes[0];
+                    var flcomentario = false;
+                    classificacao.comentarios.forEach(function (dbcomentario) {
+                        if (dbcomentario.idComentario == comentario.idComentario &&
+                            dbcomentario.idResposta == comentario.idResposta &&
+                            dbcomentario.idColuna == comentario.idColuna) {
+                            dbcomentario.descricao = comentario.descricao;
+                            dbcomentario.status = comentario.status;
+                            dbcomentario.dataAtualizacao = new Date();
+                            flcomentario = true;
+                        }
+                    });
+                    if (flcomentario) {
+                        db.classificacaoUpdate(classificacao);
                     }
+                    else {
+                        comentario.idComentario = getIdComentario(classificacao);
+                        classificacao.comentarios.push(comentario);
+                        db.classificacaoUpdate(classificacao);
+                    }
+                    //googleNotes(classificacao)
+                    res.send([classificacao]);
+                }).catch(function (e) {
+                    console.log(e);
                 });
-                if (flcomentario) {
-                    db.classificacaoUpdate(classificacao);
-                }
-                else {
-                    comentario_1.idComentario = idComentarioMax;
-                    classificacao.comentarios.push(comentario_1);
-                    db.classificacaoUpdate(classificacao);
-                }
-                //console.log('Classificacao', classificacao)
-                //googleNotes(classificacao)
-                res.send([classificacao]);
-            }).catch(function (e) {
-                console.log(e);
             });
         }
         else {
             res.send([]);
         }
-        getIdComentario = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
-            var idComentarioMax;
-            return __generator(this, function (_a) {
-                if (classificacao.comentarios.length > 0) {
-                    idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map(function (maxCom) {
-                        return maxCom.idComentario;
-                    }));
-                    return [2 /*return*/, ++idComentarioMax];
-                }
-                else {
-                    return [2 /*return*/, 0];
-                }
-                return [2 /*return*/];
-            });
-        }); };
+        getIdComentario = function (classificacao) {
+            if (classificacao.comentarios.length > 0) {
+                var comentarios_1 = classificacao.comentarios.slice();
+                setSortComentarios(comentarios_1);
+                return (comentarios_1.pop().idComentario + 1);
+            }
+            else {
+                return 0;
+            }
+        };
+        setSortComentarios = function (comentarios) {
+            comentarios.sort(function (a, b) { return a.idComentario > b.idComentario ? 1 : -1; });
+        };
         googleNotes = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
             var parametro;
             return __generator(this, function (_a) {

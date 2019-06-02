@@ -9,4 +9,6 @@ console.log("MONGODB_URI: ", process.env.MONGODB_URI)
 
 const URI = `mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${MONGODB_AUTHDB}`;
 
-export const MONGODB_CONNECTIONSTRING = process.env.MONGODB_URI || URI
+//export const MONGODB_CONNECTIONSTRING = process.env.MONGODB_URI || URI
+
+export const MONGODB_CONNECTIONSTRING = `mongodb://@localhost:27017/crawler`

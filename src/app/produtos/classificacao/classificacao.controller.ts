@@ -68,7 +68,7 @@ export const setClassificacao = async (req: Request, res: Response) => {
         console.log(e);
     })
 
-    const setSortClassificacoes = async (classificacoes:IClassificacao[]) => {
+    const setSortClassificacoes = (classificacoes:IClassificacao[]) => {
         classificacoes.sort((a, b) => a.version > b.version ? 1 : -1 );
     };
 
@@ -249,72 +249,62 @@ export const setComentarios = async (req: Request, res: Response) => {
         dataAtualizacao: new Date()
     }]*/
 
-    console.log('Coment: ', req.body)
-
     let comentarios = req.body;
-    //let classificacao;
 
-    //comentarios.forEach(comentario => {
     if(comentarios.length > 0){
 
-        let comentario = comentarios[0];
+        comentarios.forEach(comentario => {
+            db.classificacaoFindByIdSheetAndVersion(
+                comentario.idSheet, 
+                comentario.sheetVersao
+            ).then((classificacoes) => {
+                let classificacao = classificacoes[0];
+                let flcomentario = false;
 
-        db.classificacaoFindByIdSheetAndVersion(
-            comentario.idSheet, 
-            comentario.sheetVersao
-        ).then((classificacoes) => {
+                classificacao.comentarios.forEach(dbcomentario => {
+                    if(dbcomentario.idComentario == comentario.idComentario &&
+                        dbcomentario.idResposta == comentario.idResposta &&
+                        dbcomentario.idColuna == comentario.idColuna){
 
-            let classificacao = classificacoes[0];
-            comentario.side = undefined;
+                        dbcomentario.descricao = comentario.descricao;
+                        dbcomentario.status = comentario.status;
+                        dbcomentario.dataAtualizacao = new Date();
+                        flcomentario = true;
+                    }
+                })
 
-            let flcomentario = false;
-            let idComentarioMax;
-
-            idComentarioMax = getIdComentario(classificacao);
-
-            classificacao.comentarios.forEach(dbcomentario => {
-                if(dbcomentario.idComentario == comentario.idComentario &&
-                    dbcomentario.idResposta == comentario.idResposta &&
-                    dbcomentario.idColuna == comentario.idColuna){
-
-                    dbcomentario.descricao = comentario.descricao;
-                    dbcomentario.status = comentario.status;
-                    dbcomentario.dataAtualizacao = new Date();
-                    flcomentario = true;
+                if(flcomentario){
+                    db.classificacaoUpdate(classificacao);
+                }else{
+                    comentario.idComentario = getIdComentario(classificacao);
+                    classificacao.comentarios.push(comentario);
+                    db.classificacaoUpdate(classificacao);
                 }
+
+                //googleNotes(classificacao)
+                res.send([classificacao]);
+
+            }).catch(function(e) {
+                console.log(e);
             })
-
-            if(flcomentario){
-                db.classificacaoUpdate(classificacao);
-            }else{
-                comentario.idComentario = idComentarioMax;
-                classificacao.comentarios.push(comentario);
-                db.classificacaoUpdate(classificacao);
-            }
-
-            //console.log('Classificacao', classificacao)
-
-            //googleNotes(classificacao)
-            res.send([classificacao]);
-            
-        }).catch(function(e) {
-            console.log(e);
         })
     }else{
         res.send([])
     }
-    //})
 
-    const getIdComentario = async (classificacao:IClassificacao) => {
+    const getIdComentario = (classificacao:IClassificacao) => {
         if(classificacao.comentarios.length > 0){
-            let idComentarioMax = Math.max.apply(Math, classificacao.comentarios.map((maxCom) => { 
-                return maxCom.idComentario; 
-            }))
-            return ++idComentarioMax;
+            let comentarios = [...classificacao.comentarios];
+            setSortComentarios(comentarios)
+            return (comentarios.pop().idComentario + 1);
         }else{
             return 0;
         }
     }
+
+    const setSortComentarios = (comentarios:any) => {
+        comentarios.sort((a, b) => a.idComentario > b.idComentario ? 1 : -1 );
+    };
 
     const googleNotes = async (classificacao:IClassificacao) => {
 
