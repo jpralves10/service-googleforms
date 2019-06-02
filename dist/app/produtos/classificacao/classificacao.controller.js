@@ -269,38 +269,37 @@ exports.getComentarios = function (req, res) { return __awaiter(_this, void 0, v
     });
 }); };
 exports.setComentarios = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var comentarios, getIdComentario, setSortComentarios, googleNotes;
+    var comentarios, comentario_1, getIdComentario, setSortComentarios, googleNotes;
     var _this = this;
     return __generator(this, function (_a) {
         comentarios = req.body;
         if (comentarios.length > 0) {
-            comentarios.forEach(function (comentario) {
-                db.classificacaoFindByIdSheetAndVersion(comentario.idSheet, comentario.sheetVersao).then(function (classificacoes) {
-                    var classificacao = classificacoes[0];
-                    var flcomentario = false;
-                    classificacao.comentarios.forEach(function (dbcomentario) {
-                        if (dbcomentario.idComentario == comentario.idComentario &&
-                            dbcomentario.idResposta == comentario.idResposta &&
-                            dbcomentario.idColuna == comentario.idColuna) {
-                            dbcomentario.descricao = comentario.descricao;
-                            dbcomentario.status = comentario.status;
-                            dbcomentario.dataAtualizacao = new Date();
-                            flcomentario = true;
-                        }
-                    });
-                    if (flcomentario) {
-                        db.classificacaoUpdate(classificacao);
+            comentario_1 = comentarios[0];
+            db.classificacaoFindByIdSheetAndVersion(comentario_1.idSheet, comentario_1.sheetVersao).then(function (classificacoes) {
+                var classificacao = classificacoes[0];
+                var flcomentario = false;
+                classificacao.comentarios.forEach(function (dbcomentario) {
+                    if (dbcomentario.idComentario == comentario_1.idComentario &&
+                        dbcomentario.idResposta == comentario_1.idResposta &&
+                        dbcomentario.idColuna == comentario_1.idColuna) {
+                        dbcomentario.descricao = comentario_1.descricao;
+                        dbcomentario.status = comentario_1.status;
+                        dbcomentario.dataAtualizacao = new Date();
+                        flcomentario = true;
                     }
-                    else {
-                        comentario.idComentario = getIdComentario(classificacao);
-                        classificacao.comentarios.push(comentario);
-                        db.classificacaoUpdate(classificacao);
-                    }
-                    //googleNotes(classificacao)
-                    res.send([classificacao]);
-                }).catch(function (e) {
-                    console.log(e);
                 });
+                if (flcomentario) {
+                    db.classificacaoUpdate(classificacao);
+                }
+                else {
+                    comentario_1.idComentario = getIdComentario(classificacao);
+                    classificacao.comentarios.push(comentario_1);
+                    db.classificacaoUpdate(classificacao);
+                }
+                //googleNotes(classificacao)
+                res.send([classificacao]);
+            }).catch(function (e) {
+                console.log(e);
             });
         }
         else {
