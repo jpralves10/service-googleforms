@@ -253,40 +253,40 @@ export const setComentarios = async (req: Request, res: Response) => {
 
     if(comentarios.length > 0){
 
-        comentarios.forEach(comentario => {
-            db.classificacaoFindByIdSheetAndVersion(
-                comentario.idSheet, 
-                comentario.sheetVersao
-            ).then((classificacoes) => {
-                let classificacao = classificacoes[0];
-                let flcomentario = false;
+        let comentario = comentarios[0];
 
-                classificacao.comentarios.forEach(dbcomentario => {
-                    if(dbcomentario.idComentario == comentario.idComentario &&
-                        dbcomentario.idResposta == comentario.idResposta &&
-                        dbcomentario.idColuna == comentario.idColuna){
+        db.classificacaoFindByIdSheetAndVersion(
+            comentario.idSheet, 
+            comentario.sheetVersao
+        ).then((classificacoes) => {
+            let classificacao = classificacoes[0];
+            let flcomentario = false;
 
-                        dbcomentario.descricao = comentario.descricao;
-                        dbcomentario.status = comentario.status;
-                        dbcomentario.dataAtualizacao = new Date();
-                        flcomentario = true;
-                    }
-                })
+            classificacao.comentarios.forEach(dbcomentario => {
+                if(dbcomentario.idComentario == comentario.idComentario &&
+                    dbcomentario.idResposta == comentario.idResposta &&
+                    dbcomentario.idColuna == comentario.idColuna){
 
-                if(flcomentario){
-                    db.classificacaoUpdate(classificacao);
-                }else{
-                    comentario.idComentario = getIdComentario(classificacao);
-                    classificacao.comentarios.push(comentario);
-                    db.classificacaoUpdate(classificacao);
+                    dbcomentario.descricao = comentario.descricao;
+                    dbcomentario.status = comentario.status;
+                    dbcomentario.dataAtualizacao = new Date();
+                    flcomentario = true;
                 }
-
-                //googleNotes(classificacao)
-                res.send([classificacao]);
-
-            }).catch(function(e) {
-                console.log(e);
             })
+
+            if(flcomentario){
+                db.classificacaoUpdate(classificacao);
+            }else{
+                comentario.idComentario = getIdComentario(classificacao);
+                classificacao.comentarios.push(comentario);
+                db.classificacaoUpdate(classificacao);
+            }
+
+            //googleNotes(classificacao)
+            res.send([classificacao]);
+
+        }).catch(function(e) {
+            console.log(e);
         })
     }else{
         res.send([])
