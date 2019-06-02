@@ -86,7 +86,7 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                         sheet.forEach(function (item) { colunas.push(item); }) :
                         respostas.push(sheet);
                 });
-                db.classificacaoFindByidSheet(parametros.idSheet).then(function (classificacoes) {
+                db.classificacaoFindByIdSheet(parametros.idSheet).then(function (classificacoes) {
                     if (classificacoes.length == 0) {
                         setNewClassificacao(0);
                     }

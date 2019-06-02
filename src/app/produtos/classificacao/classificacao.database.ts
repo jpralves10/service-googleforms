@@ -12,7 +12,7 @@ export const classificacaoFindBySpreadsheetId = async (spreadsheetId:string) => 
     return await col.find({spreadsheetId: spreadsheetId}).toArray() as IClassificacao[];
 }
 
-export const classificacaoFindByidSheet = async (idSheet:number) => {
+export const classificacaoFindByIdSheet = async (idSheet:number) => {
     const col = await classificacaoCollection;
     return await col.find({idSheet: idSheet}).toArray() as IClassificacao[];
 }

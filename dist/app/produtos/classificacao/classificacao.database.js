@@ -51,7 +51,7 @@ exports.classificacaoFindBySpreadsheetId = function (spreadsheetId) { return __a
         }
     });
 }); };
-exports.classificacaoFindByidSheet = function (idSheet) { return __awaiter(_this, void 0, void 0, function () {
+exports.classificacaoFindByIdSheet = function (idSheet) { return __awaiter(_this, void 0, void 0, function () {
     var col;
     return __generator(this, function (_a) {
         switch (_a.label) {

@@ -49,7 +49,7 @@ export const setClassificacao = async (req: Request, res: Response) => {
         respostas.push(sheet);
     })
 
-    db.classificacaoFindByidSheet(parametros.idSheet).then((classificacoes) => {
+    db.classificacaoFindByIdSheet(parametros.idSheet).then((classificacoes) => {
         if(classificacoes.length == 0){
             setNewClassificacao(0);
         }else{
