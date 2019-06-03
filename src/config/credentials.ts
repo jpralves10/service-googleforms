@@ -5,10 +5,8 @@ export const MONGODB_AUTHDB = process.env.MONGODB_AUTHDB || 'crawler';
 
 //https://www.youtube.com/watch?v=cRbf_33Rdo4
 
-console.log("MONGODB_URI: ", process.env.MONGODB_URI)
-
 const URI = `mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${MONGODB_AUTHDB}`;
+const URI_LOCAL = `mongodb://@localhost:27017/crawler`;
 
 //export const MONGODB_CONNECTIONSTRING = process.env.MONGODB_URI || URI
-
-export const MONGODB_CONNECTIONSTRING = `mongodb://@localhost:27017/crawler`
+export const MONGODB_CONNECTIONSTRING = URI_LOCAL
