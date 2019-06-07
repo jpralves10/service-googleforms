@@ -335,3 +335,49 @@ exports.setComentarios = function (req, res) { return __awaiter(_this, void 0, v
         return [2 /*return*/];
     });
 }); };
+exports.getCategoriasForm = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var categoria;
+    return __generator(this, function (_a) {
+        categoria = req.body;
+        if (categoria != null) {
+            db.categoriasFormularioFindByCodigo(categoria.codigo).then(function (categorias) {
+                res.send(categorias);
+            });
+        }
+        else {
+            db.categoriasFormularioFindAll().then(function (categorias) {
+                res.send(categorias);
+            });
+        }
+        return [2 /*return*/];
+    });
+}); };
+exports.setCategoriasForm = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var categoria, getCodigoCategoria, setSortCategorias;
+    return __generator(this, function (_a) {
+        categoria = req.body;
+        db.categoriasFormularioFindByCodigo(categoria.codigo).then(function (categorias) {
+            if (categorias.length == 0) {
+                categoria.codigo = getCodigoCategoria(categorias);
+                db.categoriasFormSave(categoria);
+            }
+            else {
+                db.categoriasFormUpdate(categoria);
+            }
+        });
+        getCodigoCategoria = function (categorias) {
+            if (categorias.length > 0) {
+                var newCategorias = categorias.slice();
+                setSortCategorias(newCategorias);
+                return (categorias.pop().codigo + 1);
+            }
+            else {
+                return 0;
+            }
+        };
+        setSortCategorias = function (categorias) {
+            categorias.sort(function (a, b) { return a.codigo > b.codigo ? 1 : -1; });
+        };
+        return [2 /*return*/];
+    });
+}); };

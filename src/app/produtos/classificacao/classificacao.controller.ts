@@ -4,6 +4,7 @@ import * as db from './classificacao.database'
 
 import dadosMock from './classificacao.mock';
 import * as sheet from './classificacao.sheet';
+import { ICategoriasForm } from 'src/models/categoriasForm';
 
 const spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
 
@@ -327,5 +328,50 @@ export const setComentarios = async (req: Request, res: Response) => {
 
         sheet.setSpreedsheetNotes(parametro)
         res.sendStatus(200)
+    }
+}
+
+export const getCategoriasForm = async (req: Request, res: Response) => {
+
+    let categoria = req.body
+
+    if(categoria != null){
+        db.categoriasFormularioFindByCodigo(categoria.codigo).then((categorias) => {
+            res.send(categorias)
+        })
+    }else{
+        db.categoriasFormularioFindAll().then((categorias) => {
+            res.send(categorias)
+        })
+    }
+}
+
+export const setCategoriasForm = async (req: Request, res: Response) => {
+
+    let categoria = req.body;
+
+    db.categoriasFormularioFindByCodigo(
+        categoria.codigo
+    ).then((categorias) => {
+        if(categorias.length == 0){
+            categoria.codigo = getCodigoCategoria(categorias);
+            db.categoriasFormSave(categoria);
+        }else{
+            db.categoriasFormUpdate(categoria);
+        }
+    })
+
+    const getCodigoCategoria = (categorias:ICategoriasForm[]) => {
+        if(categorias.length > 0){
+            let newCategorias = [...categorias];
+            setSortCategorias(newCategorias)
+            return (categorias.pop().codigo + 1);
+        }else{
+            return 0;
+        }
+    }
+
+    const setSortCategorias = (categorias:any) => {
+        categorias.sort((a, b) => a.codigo > b.codigo ? 1 : -1 );
     }
 }

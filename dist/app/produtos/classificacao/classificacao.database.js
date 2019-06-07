@@ -115,3 +115,68 @@ exports.classificacaoUpdate = function (classificacao) { return __awaiter(_this,
         }
     });
 }); };
+/* Categorias Form */
+exports.categoriasFormularioFindAll = function () { return __awaiter(_this, void 0, void 0, function () {
+    var col;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, mongodb_1.categoriasFormCollection];
+            case 1:
+                col = _a.sent();
+                return [4 /*yield*/, col.find().toArray()];
+            case 2: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.categoriasFormularioFindByCodigo = function (codigo) { return __awaiter(_this, void 0, void 0, function () {
+    var col;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, mongodb_1.categoriasFormCollection];
+            case 1:
+                col = _a.sent();
+                return [4 /*yield*/, col.find({ codigo: codigo }).toArray()];
+            case 2: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.categoriasFormSave = function (categoriasForm) { return __awaiter(_this, void 0, void 0, function () {
+    var col;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, mongodb_1.categoriasFormCollection];
+            case 1:
+                col = _a.sent();
+                return [4 /*yield*/, col.insertOne(categoriasForm).then(function () {
+                        return true;
+                    }).catch(function (e) {
+                        console.log(e);
+                        return false;
+                    })];
+            case 2:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.categoriasFormUpdate = function (categorias) { return __awaiter(_this, void 0, void 0, function () {
+    var col, query, newCategorias;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, mongodb_1.categoriasFormCollection];
+            case 1:
+                col = _a.sent();
+                query = { codigo: categorias.codigo };
+                newCategorias = { $set: categorias };
+                return [4 /*yield*/, col.updateOne(query, newCategorias).then(function () {
+                        return true;
+                    }).catch(function (e) {
+                        console.log(e);
+                        return false;
+                    })];
+            case 2:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); };

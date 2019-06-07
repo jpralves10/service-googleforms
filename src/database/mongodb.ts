@@ -3,6 +3,7 @@ import { MONGODB_CONNECTIONSTRING } from '../config/credentials';
 
 import { IProduto } from '../models/produtos';
 import { IClassificacao } from '../models/classificacao';
+import { ICategoriasForm } from '../models/categoriasForm';
 
 export const connection = mongo.connect(MONGODB_CONNECTIONSTRING, {
   useNewUrlParser: true
@@ -22,4 +23,8 @@ export const integradosCollection = crawlerDB.then(db =>
 
 export const classificacaoCollection = crawlerDB.then(db =>
     db.collection<IClassificacao>('classificacao')
+);
+
+export const categoriasFormCollection = crawlerDB.then(db =>
+    db.collection<ICategoriasForm>('categoriasForm')
 );
