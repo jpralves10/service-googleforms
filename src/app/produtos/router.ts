@@ -7,8 +7,10 @@ import * as ClassificacaoController from './classificacao/classificacao.controll
 const router = Router();
 
 router.post('/filtro/catalogo', CatalogoController.filtro);
+
 router.get('/comentario/find', ClassificacaoController.getComentarios);
 router.post('/comentario/save', ClassificacaoController.setComentarios);
+
 router.post('/classificacao/find', ClassificacaoController.getClassificacao);
 router.get('/classificacao/save', ClassificacaoController.setClassificacao);
 

@@ -339,7 +339,7 @@ exports.getCategoriasForm = function (req, res) { return __awaiter(_this, void 0
     var categoria;
     return __generator(this, function (_a) {
         categoria = req.body;
-        if (categoria != null) {
+        if (categoria.codigo != undefined) {
             db.categoriasFormularioFindByCodigo(categoria.codigo).then(function (categorias) {
                 res.send(categorias);
             });
@@ -356,14 +356,28 @@ exports.setCategoriasForm = function (req, res) { return __awaiter(_this, void 0
     var categoria, getCodigoCategoria, setSortCategorias;
     return __generator(this, function (_a) {
         categoria = req.body;
-        db.categoriasFormularioFindByCodigo(categoria.codigo).then(function (categorias) {
-            if (categorias.length == 0) {
+        db.categoriasFormularioFindAll().then(function (categorias) {
+            var flCategoria = false;
+            if (categorias.length > 0) {
+                categorias.forEach(function (dbcategoria) {
+                    if (categoria.codigo == dbcategoria.codigo) {
+                        dbcategoria.descricao = categoria.descricao;
+                        db.categoriasFormUpdate(dbcategoria);
+                        flCategoria = true;
+                    }
+                });
+                if (!flCategoria) {
+                    categoria.codigo = getCodigoCategoria(categorias);
+                    db.categoriasFormSave(categoria);
+                }
+            }
+            else {
                 categoria.codigo = getCodigoCategoria(categorias);
                 db.categoriasFormSave(categoria);
             }
-            else {
-                db.categoriasFormUpdate(categoria);
-            }
+            db.categoriasFormularioFindAll().then(function (categorias) {
+                res.send(categorias);
+            });
         });
         getCodigoCategoria = function (categorias) {
             if (categorias.length > 0) {

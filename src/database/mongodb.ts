@@ -6,7 +6,7 @@ import { IClassificacao } from '../models/classificacao';
 import { ICategoriasForm } from '../models/categoriasForm';
 
 export const connection = mongo.connect(MONGODB_CONNECTIONSTRING, {
-  useNewUrlParser: true
+    useNewUrlParser: true
 });
 
 export const crawlerDB = connection.then(conn => conn.db('crawler') || conn.db('heroku_v5w2cb6t'));

@@ -335,7 +335,7 @@ export const getCategoriasForm = async (req: Request, res: Response) => {
 
     let categoria = req.body
 
-    if(categoria != null){
+    if(categoria.codigo != undefined){
         db.categoriasFormularioFindByCodigo(categoria.codigo).then((categorias) => {
             res.send(categorias)
         })
@@ -350,15 +350,31 @@ export const setCategoriasForm = async (req: Request, res: Response) => {
 
     let categoria = req.body;
 
-    db.categoriasFormularioFindByCodigo(
-        categoria.codigo
-    ).then((categorias) => {
-        if(categorias.length == 0){
+    db.categoriasFormularioFindAll().then((categorias) => {
+
+        let flCategoria = false;
+
+        if(categorias.length > 0){
+            categorias.forEach(dbcategoria => {
+                if(categoria.codigo == dbcategoria.codigo){
+                    dbcategoria.descricao = categoria.descricao
+                    db.categoriasFormUpdate(dbcategoria);
+                    flCategoria = true
+                }
+            })
+
+            if(!flCategoria){
+                categoria.codigo = getCodigoCategoria(categorias);
+                db.categoriasFormSave(categoria);
+            }
+        }else{
             categoria.codigo = getCodigoCategoria(categorias);
             db.categoriasFormSave(categoria);
-        }else{
-            db.categoriasFormUpdate(categoria);
         }
+
+        db.categoriasFormularioFindAll().then((categorias) => {
+            res.send(categorias)
+        })
     })
 
     const getCodigoCategoria = (categorias:ICategoriasForm[]) => {
