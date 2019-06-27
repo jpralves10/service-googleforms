@@ -36,53 +36,55 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-//import { ObjectId } from 'bson';
 var mongodb_1 = require("../../../database/mongodb");
-// Classificacao
-exports.classificacaoFindBySpreadsheetId = function (spreadsheetId) { return __awaiter(_this, void 0, void 0, function () {
+/* Categorias Form */
+exports.categoriasFormularioFindAll = function () { return __awaiter(_this, void 0, void 0, function () {
     var col;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
+            case 0: return [4 /*yield*/, mongodb_1.categoriasFormCollection];
             case 1:
                 col = _a.sent();
-                return [4 /*yield*/, col.find({ spreadsheetId: spreadsheetId }).toArray()];
+                return [4 /*yield*/, col.find({}).toArray()];
             case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
-exports.classificacaoFindByIdSheet = function (idSheet) { return __awaiter(_this, void 0, void 0, function () {
+exports.categoriasFormularioFindByCodigo = function (codigo) { return __awaiter(_this, void 0, void 0, function () {
     var col;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
+            case 0: return [4 /*yield*/, mongodb_1.categoriasFormCollection];
             case 1:
                 col = _a.sent();
-                return [4 /*yield*/, col.find({ idSheet: idSheet }).toArray()];
+                return [4 /*yield*/, col.find({ codigo: codigo }).toArray()];
             case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
-exports.classificacaoFindByIdSheetAndVersion = function (idSheet, version) { return __awaiter(_this, void 0, void 0, function () {
-    var col;
+exports.categoriasFormularioFindByCodigoRemove = function (categorias) { return __awaiter(_this, void 0, void 0, function () {
+    var col, query;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
+            case 0: return [4 /*yield*/, mongodb_1.categoriasFormCollection];
             case 1:
                 col = _a.sent();
-                return [4 /*yield*/, col.find({ idSheet: idSheet, version: version }).toArray()];
+                query = { codigo: categorias.codigo };
+                return [4 /*yield*/, col.deleteOne(query).catch(function (e) {
+                        console.log(e);
+                    })];
             case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };
-exports.classificacaoSave = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
+exports.categoriasFormSave = function (categoriasForm) { return __awaiter(_this, void 0, void 0, function () {
     var col;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
+            case 0: return [4 /*yield*/, mongodb_1.categoriasFormCollection];
             case 1:
                 col = _a.sent();
-                return [4 /*yield*/, col.insertOne(classificacao).catch(function (e) {
+                return [4 /*yield*/, col.insertOne(categoriasForm).catch(function (e) {
                         console.log(e);
                     })];
             case 2:
@@ -91,16 +93,16 @@ exports.classificacaoSave = function (classificacao) { return __awaiter(_this, v
         }
     });
 }); };
-exports.classificacaoUpdate = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
-    var col, query, newClassificacao;
+exports.categoriasFormUpdate = function (categorias) { return __awaiter(_this, void 0, void 0, function () {
+    var col, query, newCategorias;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
+            case 0: return [4 /*yield*/, mongodb_1.categoriasFormCollection];
             case 1:
                 col = _a.sent();
-                query = { idSheet: classificacao.idSheet };
-                newClassificacao = { $set: classificacao };
-                return [4 /*yield*/, col.updateOne(query, newClassificacao).catch(function (e) {
+                query = { codigo: categorias.codigo };
+                newCategorias = { $set: categorias };
+                return [4 /*yield*/, col.updateOne(query, newCategorias).catch(function (e) {
                         console.log(e);
                     })];
             case 2:
