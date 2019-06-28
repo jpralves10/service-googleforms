@@ -66,45 +66,63 @@ exports.setClassificacaoEmail = function (req, res) { return __awaiter(_this, vo
     });
 }); };
 exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var parametros, sheets, colunas, respostas, setSortClassificacoes, setNewClassificacao, getHeader, getColunas, getRespostas, getVerificarVersao;
+    var parametros, colunas, respostas, setSortClassificacoes, setNewClassificacao, getHeader, getColunas, getRespostas, getVerificarVersao;
     var _this = this;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                parametros = {
-                    spreadsheetId: spreadsheetId,
-                    idSheet: 1997890537,
-                    nmSheet: 'FORMULÁRIO NCM - HCX CONSULTORIA'
-                };
-                return [4 /*yield*/, sheet.getSpreedsheet(parametros.spreadsheetId, 'A1:ZZZ100000')];
-            case 1:
-                sheets = _a.sent();
+                parametros = req.body[0];
                 colunas = [];
                 respostas = [];
-                sheets.forEach(function (sheet, i) {
-                    i == 0 ?
-                        sheet.forEach(function (item) { colunas.push(item); }) :
-                        respostas.push(sheet);
-                });
-                db.classificacaoFindByIdSheet(parametros.idSheet).then(function (classificacoes) {
-                    if (classificacoes.length == 0) {
-                        setNewClassificacao(0);
-                    }
-                    else {
-                        setSortClassificacoes(classificacoes);
-                        var classificacao = classificacoes[0];
-                        if (getVerificarVersao(classificacao)) {
-                            classificacao.respostas = [];
-                            getRespostas(classificacao);
-                            db.classificacaoUpdate(classificacao);
+                /*let parametros = {
+                    spreadsheetId: spreadsheetId,
+                    idSheet: 1997890537,
+                    titulo: 'FORMULÁRIO NCM - HCX CONSULTORIA'
+                };*/
+                //console.log('parametros ', parametros)
+                return [4 /*yield*/, sheet.getSpreedsheet(parametros.spreadsheetId, 'A1:ZZZ100000').then(function (item) {
+                        console.log('Sheet ', sheet);
+                        item.forEach(function (sheet, i) {
+                            i == 0 ?
+                                sheet.forEach(function (item) { colunas.push(item); }) :
+                                respostas.push(sheet);
+                        });
+                        db.classificacaoFindByIdSheet(parametros.spreadsheetId, parametros.idSheet).then(function (classificacoes) {
+                            if (classificacoes.length == 0) {
+                                setNewClassificacao(0);
+                            }
+                            else {
+                                setSortClassificacoes(classificacoes);
+                                var classificacao = classificacoes[0];
+                                if (getVerificarVersao(classificacao)) {
+                                    classificacao.respostas = [];
+                                    getHeader(classificacao);
+                                    getRespostas(classificacao);
+                                    db.classificacaoUpdate(classificacao);
+                                }
+                                else {
+                                    setNewClassificacao(++classificacao.version);
+                                }
+                            }
+                            res.sendStatus('200');
+                        }).catch(function (e) {
+                            console.log(e);
+                        });
+                    }).catch(function (err) {
+                        var msgError = 'Error: The caller does not have permission';
+                        var error = new RegExp(msgError);
+                        if (error.exec(err) != null) {
+                            res.send(msgError);
                         }
-                        else {
-                            setNewClassificacao(++classificacao.version);
-                        }
-                    }
-                }).catch(function (e) {
-                    console.log(e);
-                });
+                    })];
+            case 1:
+                /*let parametros = {
+                    spreadsheetId: spreadsheetId,
+                    idSheet: 1997890537,
+                    titulo: 'FORMULÁRIO NCM - HCX CONSULTORIA'
+                };*/
+                //console.log('parametros ', parametros)
+                _a.sent();
                 setSortClassificacoes = function (classificacoes) {
                     classificacoes.sort(function (a, b) { return a.version > b.version ? 1 : -1; });
                 };
@@ -125,7 +143,11 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                     return __generator(this, function (_a) {
                         classificacao.spreadsheetId = parametros.spreadsheetId;
                         classificacao.idSheet = parametros.idSheet;
-                        classificacao.nmSheet = parametros.nmSheet;
+                        classificacao.titulo = parametros.titulo;
+                        classificacao.status = parametros.status;
+                        classificacao.dataCriacao = parametros.dataCriacao;
+                        classificacao.dataAtualizacao = parametros.dataAtualizacao;
+                        classificacao.categorias = parametros.categorias;
                         return [2 /*return*/];
                     });
                 }); };
@@ -192,22 +214,26 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                         return [2 /*return*/, true];
                     });
                 }); };
-                res.sendStatus(200);
                 return [2 /*return*/];
         }
     });
 }); };
-exports.getClassificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+exports.getFindClassificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var classificacao;
     return __generator(this, function (_a) {
         classificacao = req.body;
         db.classificacaoFindBySpreadsheetId(classificacao.spreadsheetId).then(function (classificacoes) {
-            if (classificacoes.length > 0) {
-                res.send(classificacoes);
-            }
-            else {
-                res.send([]);
-            }
+            classificacoes.length > 0 ? res.send(classificacoes) : res.send([]);
+        }).catch(function (e) {
+            console.log(e);
+        });
+        return [2 /*return*/];
+    });
+}); };
+exports.getFindAllClassificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        db.classificacaoFindAll().then(function (classificacoes) {
+            classificacoes.length > 0 ? res.send(classificacoes) : res.send([]);
         }).catch(function (e) {
             console.log(e);
         });
@@ -223,12 +249,7 @@ exports.getColunas = function (req, res) { return __awaiter(_this, void 0, void 
         db.classificacaoFindBySpreadsheetId(parametros.spreadsheetId).then(function (classificacoes) {
             if (classificacoes.length > 0) {
                 classificacoes.forEach(function (classificacao) {
-                    if (classificacao.colunas.length > 0) {
-                        res.send(classificacao.colunas);
-                    }
-                    else {
-                        res.send([]);
-                    }
+                    classificacao.colunas.length > 0 ? res.send(classificacao.colunas) : res.send([]);
                 });
             }
             else {

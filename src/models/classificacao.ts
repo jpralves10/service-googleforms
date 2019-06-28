@@ -3,8 +3,12 @@ export interface IClassificacao {
     _id?: any
     spreadsheetId: string,
     idSheet: number,
-    nmSheet?: string,
+    titulo?: string,
     version?: number,
+    status?: string;
+    dataCriacao?: Date,
+    dataAtualizacao?: Date,
+    categorias?: [],
     colunas?: {
         idColuna: number,
         nmColuna: string 

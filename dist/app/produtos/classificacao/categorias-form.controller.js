@@ -45,7 +45,7 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var db = __importStar(require("./categorias-form.database"));
 var spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
-exports.getCategoriasForm = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+exports.getFindCategoriasForm = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var categoria;
     return __generator(this, function (_a) {
         categoria = req.body;

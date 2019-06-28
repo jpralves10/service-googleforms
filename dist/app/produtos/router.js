@@ -15,11 +15,12 @@ var CategoriasControlller = __importStar(require("./classificacao/categorias-for
 //import * as GoogleAuth from './classificacao/classificacao.sheet';
 var router = express_1.Router();
 router.post('/filtro/catalogo', CatalogoController.filtro);
-router.get('/comentario/find', ComentariosControlller.getComentarios);
+router.post('/comentario/find', ComentariosControlller.getFindComentarios);
 router.post('/comentario/save', ComentariosControlller.setComentarios);
-router.post('/classificacao/find', ClassificacaoController.getClassificacao);
-router.get('/classificacao/save', ClassificacaoController.setClassificacao);
-router.post('/categoriasForm/find', CategoriasControlller.getCategoriasForm);
+router.post('/classificacao/findAll', ClassificacaoController.getFindAllClassificacao);
+router.post('/classificacao/find', ClassificacaoController.getFindClassificacao);
+router.post('/classificacao/save', ClassificacaoController.setClassificacao);
+router.post('/categoriasForm/find', CategoriasControlller.getFindCategoriasForm);
 router.post('/categoriasForm/save', CategoriasControlller.setCategoriasForm);
 router.post('/categoriasForm/remove', CategoriasControlller.delCategoriasForm);
 exports.default = router;

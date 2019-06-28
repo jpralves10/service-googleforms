@@ -32,42 +32,64 @@ export const setClassificacaoEmail = async (req: Request, res: Response) => {
 
 export const setClassificacao = async (req: Request, res: Response) => {
 
-    //let parametros: {spreadsheetId: string, idSheet: number, nmSheet: string} = res.body
-
-    let parametros = {
-        spreadsheetId: spreadsheetId,
-        idSheet: 1997890537,
-        nmSheet: 'FORMULÁRIO NCM - HCX CONSULTORIA'
-    };
-
-    var sheets = await sheet.getSpreedsheet(parametros.spreadsheetId, 'A1:ZZZ100000'); //dadosMock;
+    var parametros = req.body[0]
     var colunas: any = [];
     var respostas: any = [];
 
-    sheets.forEach((sheet, i) => {
-        i == 0 ?
-        sheet.forEach(item => { colunas.push(item) }) :
-        respostas.push(sheet);
-    })
+    /*let parametros = {
+        spreadsheetId: spreadsheetId,
+        idSheet: 1997890537,
+        titulo: 'FORMULÁRIO NCM - HCX CONSULTORIA'
+    };*/
 
-    db.classificacaoFindByIdSheet(parametros.idSheet).then((classificacoes) => {
-        if(classificacoes.length == 0){
-            setNewClassificacao(0);
-        }else{
-            setSortClassificacoes(classificacoes);
-            let classificacao = classificacoes[0];
+    //console.log('parametros ', parametros)
 
-            if(getVerificarVersao(classificacao)){
-                classificacao.respostas = [];
-                getRespostas(classificacao)
-                db.classificacaoUpdate(classificacao);
+    await sheet.getSpreedsheet(parametros.spreadsheetId, 'A1:ZZZ100000').then(item => {
+
+        console.log('Sheet ', sheet)
+
+        item.forEach((sheet, i) => {
+            i == 0 ?
+            sheet.forEach(item => { colunas.push(item) }) :
+            respostas.push(sheet);
+        })
+
+        db.classificacaoFindByIdSheet(parametros.spreadsheetId, parametros.idSheet).then((classificacoes) => {
+            if(classificacoes.length == 0){
+                setNewClassificacao(0);
             }else{
-                setNewClassificacao(++classificacao.version);
+                setSortClassificacoes(classificacoes);
+                let classificacao = classificacoes[0];
+
+                if(getVerificarVersao(classificacao)){
+    
+                    classificacao.respostas = [];
+    
+                    getHeader(classificacao)
+                    getRespostas(classificacao)
+    
+                    db.classificacaoUpdate(classificacao);
+                }else{
+                    setNewClassificacao(++classificacao.version);
+                }
             }
+
+            res.sendStatus('200')
+
+        }).catch(function(e) {
+            console.log(e);
+        })
+
+    }).catch(err => {
+        var msgError = 'Error: The caller does not have permission';
+        const error = new RegExp(msgError)
+
+        if(error.exec(err) != null){
+            res.send(msgError)
         }
-    }).catch(function(e) {
-        console.log(e);
-    })
+    });
+    
+    // Functions Utils
 
     const setSortClassificacoes = (classificacoes:IClassificacao[]) => {
         classificacoes.sort((a, b) => a.version > b.version ? 1 : -1 );
@@ -89,7 +111,11 @@ export const setClassificacao = async (req: Request, res: Response) => {
     const getHeader = async (classificacao:IClassificacao) => {
         classificacao.spreadsheetId = parametros.spreadsheetId;
         classificacao.idSheet = parametros.idSheet;
-        classificacao.nmSheet = parametros.nmSheet;
+        classificacao.titulo = parametros.titulo;
+        classificacao.status = parametros.status;
+        classificacao.dataCriacao = parametros.dataCriacao;
+        classificacao.dataAtualizacao = parametros.dataAtualizacao;
+        classificacao.categorias = parametros.categorias;
     };
 
     const getColunas = async (classificacao:IClassificacao) => {
@@ -155,23 +181,25 @@ export const setClassificacao = async (req: Request, res: Response) => {
         })
         return true;
     };
-
-    res.sendStatus(200)
 }
 
-export const getClassificacao = async (req: Request, res: Response) => {
+export const getFindClassificacao = async (req: Request, res: Response) => {
 
     let classificacao: IClassificacao = req.body;
 
     db.classificacaoFindBySpreadsheetId(
         classificacao.spreadsheetId
     ).then((classificacoes) => {
-            
-        if(classificacoes.length > 0){
-            res.send(classificacoes)
-        }else{
-            res.send([])
-        }
+        classificacoes.length > 0 ? res.send(classificacoes) : res.send([])
+    }).catch(function(e) {
+        console.log(e);
+    })
+}
+
+export const getFindAllClassificacao = async (req: Request, res: Response) => {
+
+    db.classificacaoFindAll().then((classificacoes) => {
+        classificacoes.length > 0 ? res.send(classificacoes) : res.send([]);
     }).catch(function(e) {
         console.log(e);
     })
@@ -191,12 +219,7 @@ export const getColunas = async (req: Request, res: Response) => {
     db.classificacaoFindBySpreadsheetId(parametros.spreadsheetId).then((classificacoes) => {
         if(classificacoes.length > 0){
             classificacoes.forEach(classificacao => {
-                if(classificacao.colunas.length > 0){
-                    res.send(classificacao.colunas);
-                }
-                else{
-                    res.send([]);
-                }
+                classificacao.colunas.length > 0 ? res.send(classificacao.colunas) : res.send([]);
             })
         }else{
             res.send([]);

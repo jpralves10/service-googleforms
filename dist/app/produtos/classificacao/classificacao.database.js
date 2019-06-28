@@ -39,42 +39,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //import { ObjectId } from 'bson';
 var mongodb_1 = require("../../../database/mongodb");
 // Classificacao
-exports.classificacaoFindBySpreadsheetId = function (spreadsheetId) { return __awaiter(_this, void 0, void 0, function () {
-    var col;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
-            case 1:
-                col = _a.sent();
-                return [4 /*yield*/, col.find({ spreadsheetId: spreadsheetId }).toArray()];
-            case 2: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
-exports.classificacaoFindByIdSheet = function (idSheet) { return __awaiter(_this, void 0, void 0, function () {
-    var col;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
-            case 1:
-                col = _a.sent();
-                return [4 /*yield*/, col.find({ idSheet: idSheet }).toArray()];
-            case 2: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
-exports.classificacaoFindByIdSheetAndVersion = function (idSheet, version) { return __awaiter(_this, void 0, void 0, function () {
-    var col;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
-            case 1:
-                col = _a.sent();
-                return [4 /*yield*/, col.find({ idSheet: idSheet, version: version }).toArray()];
-            case 2: return [2 /*return*/, _a.sent()];
-        }
-    });
-}); };
 exports.classificacaoSave = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
     var col;
     return __generator(this, function (_a) {
@@ -106,6 +70,54 @@ exports.classificacaoUpdate = function (classificacao) { return __awaiter(_this,
             case 2:
                 _a.sent();
                 return [2 /*return*/];
+        }
+    });
+}); };
+exports.classificacaoFindAll = function () { return __awaiter(_this, void 0, void 0, function () {
+    var col;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
+            case 1:
+                col = _a.sent();
+                return [4 /*yield*/, col.find({}).toArray()];
+            case 2: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.classificacaoFindBySpreadsheetId = function (spreadsheetId) { return __awaiter(_this, void 0, void 0, function () {
+    var col;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
+            case 1:
+                col = _a.sent();
+                return [4 /*yield*/, col.find({ spreadsheetId: spreadsheetId }).toArray()];
+            case 2: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.classificacaoFindByIdSheet = function (spreadsheetId, idSheet) { return __awaiter(_this, void 0, void 0, function () {
+    var col;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
+            case 1:
+                col = _a.sent();
+                return [4 /*yield*/, col.find({ spreadsheetId: spreadsheetId, idSheet: idSheet }).toArray()];
+            case 2: return [2 /*return*/, _a.sent()];
+        }
+    });
+}); };
+exports.classificacaoFindByIdSheetAndVersion = function (spreadsheetId, idSheet, version) { return __awaiter(_this, void 0, void 0, function () {
+    var col;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, mongodb_1.classificacaoCollection];
+            case 1:
+                col = _a.sent();
+                return [4 /*yield*/, col.find({ spreadsheetId: spreadsheetId, idSheet: idSheet, version: version }).toArray()];
+            case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };

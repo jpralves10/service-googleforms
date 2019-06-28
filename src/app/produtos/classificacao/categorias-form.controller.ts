@@ -4,7 +4,7 @@ import * as db from './categorias-form.database'
 
 const spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
 
-export const getCategoriasForm = async (req: Request, res: Response) => {
+export const getFindCategoriasForm = async (req: Request, res: Response) => {
 
     let categoria = req.body
 

@@ -25,9 +25,9 @@ function PayloadGoogleFormData(e) {
     var
     ss = SpreadsheetApp.getActiveSheet(),
     idSheet = ss.getSheetId(),
-    nmSheet = ss.getSheetName();
+    titulo = ss.getSheetName();
     
-    payload.push([idSheet, nmSheet]);
+    payload.push([idSheet, titulo]);
     
     var range = SpreadsheetApp.getActiveSheet().getDataRange();
     range.getValues().forEach(function(item){
@@ -38,7 +38,7 @@ function PayloadGoogleFormData(e) {
     /*var
     ss = SpreadsheetApp.getActiveSheet(),
     idSheet = ss.getSheetId(),
-    nmSheet = ss.getSheetName(),
+    titulo = ss.getSheetName(),
     lr = ss.getLastRow(),
     carimbo = ss.getRange(lr, 1, 1, 1).getValue(),  // column A
     email   = ss.getRange(lr, 2, 1, 1).getValue(),  // column B
@@ -65,7 +65,7 @@ function PayloadGoogleFormData(e) {
     SpreadsheetApp.getActiveSpreadsheet().insertColumnsAfter(lastCol +1, (maxCols - lastCol));* /
     
     var payload = {
-      "sheet": { 'idSheet': String(idSheet), 'nmSheet': String(nmSheet) },
+      "sheet": { 'idSheet': String(idSheet), 'titulo': String(titulo) },
       "resposta": { 'idResposta': String(email), 'carimbo': String(carimbo) },
       "campoC": { 'idCampo': '1', 'nmColuna': 'CÓDIGO NCM OU HS CODE UTILIZADO ATUALMENTE', 'deCampo': String(campoC) },
       "campoD": { 'idCampo': '2', 'nmColuna': 'DESCRIÇÃO COMPLETA DA MERCADORIA', 'deCampo': String(campoD) },

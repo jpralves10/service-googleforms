@@ -47,7 +47,7 @@ var db = __importStar(require("./classificacao.database"));
 var sheet = __importStar(require("./classificacao.sheet"));
 var spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
 // Comentario
-exports.getComentarios = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+exports.getFindComentarios = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var parametros, comentarios;
     return __generator(this, function (_a) {
         parametros = {
@@ -83,7 +83,7 @@ exports.setComentarios = function (req, res) { return __awaiter(_this, void 0, v
         comentarios = req.body;
         if (comentarios.length > 0) {
             comentario_1 = comentarios[0];
-            db.classificacaoFindByIdSheetAndVersion(comentario_1.idSheet, comentario_1.sheetVersao).then(function (classificacoes) {
+            db.classificacaoFindByIdSheetAndVersion(comentario_1.spreadsheetId, comentario_1.idSheet, comentario_1.sheetVersao).then(function (classificacoes) {
                 var classificacao = classificacoes[0];
                 var flcomentario = false;
                 classificacao.comentarios.forEach(function (dbcomentario) {

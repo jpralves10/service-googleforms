@@ -38,12 +38,12 @@ export const getParamsResource = async (spreadsheetId:string, range:string) => {
 export const getSpreedsheet = async (spreadsheetId:string, range:string) => {
 
     //let range = 'A1:Q10000'
-
+    
     return await sheets.spreadsheets.values.get(
         await getParamsResource(spreadsheetId, range)
     ).then(response => {
         return response.data.values
-    });
+    })
 }
 
 export const getSpreedsheetHeader = async (spreadsheetId:string, range:string) => {

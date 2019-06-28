@@ -7,7 +7,7 @@ const spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
 
 // Comentario
 
-export const getComentarios = async (req: Request, res: Response) => {
+export const getFindComentarios = async (req: Request, res: Response) => {
 
     let parametros = {
         spreadsheetId: '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ',
@@ -39,6 +39,7 @@ export const getComentarios = async (req: Request, res: Response) => {
 export const setComentarios = async (req: Request, res: Response) => {
 
     /*let comentarios = [{
+        spreadsheetId: '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ',
         idSheet: 1997890537,
         idComentario: null,
         idResposta: 'jean@eficilog.com',
@@ -58,7 +59,8 @@ export const setComentarios = async (req: Request, res: Response) => {
         let comentario = comentarios[0];
 
         db.classificacaoFindByIdSheetAndVersion(
-            comentario.idSheet, 
+            comentario.spreadsheetId,
+            comentario.idSheet,
             comentario.sheetVersao
         ).then((classificacoes) => {
             let classificacao = classificacoes[0];
