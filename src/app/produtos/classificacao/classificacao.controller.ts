@@ -74,7 +74,7 @@ export const setClassificacao = async (req: Request, res: Response) => {
                 }
             }
 
-            res.sendStatus('200')
+            res.send('200')
 
         }).catch(function(e) {
             console.log(e);

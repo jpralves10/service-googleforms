@@ -104,7 +104,7 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                                     setNewClassificacao(++classificacao.version);
                                 }
                             }
-                            res.sendStatus('200');
+                            res.send('200');
                         }).catch(function (e) {
                             console.log(e);
                         });
