@@ -3,6 +3,7 @@ import * as CatalogoController from './catalogo/catalogo.controller';
 import * as ClassificacaoController from './classificacao/classificacao.controller';
 import * as ComentariosControlller from './classificacao/comentarios.controller';
 import * as CategoriasControlller from './classificacao/categorias-form.controller';
+import * as ClassificarController from './classificacao/classificar.controller';
 
 //import * as GoogleAuth from './classificacao/classificacao.sheet';
 
@@ -16,6 +17,11 @@ router.post('/comentario/save', ComentariosControlller.setComentarios);
 router.post('/classificacao/findAll', ClassificacaoController.getFindAllClassificacao);
 router.post('/classificacao/find', ClassificacaoController.getFindClassificacao);
 router.post('/classificacao/save', ClassificacaoController.setClassificacao);
+
+router.post('/classificar/findAll', ClassificarController.getFindAllClassificar);
+router.post('/classificar/find', ClassificarController.getFindClassificar);
+router.post('/classificar/save', ClassificarController.setClassificar);
+router.post('/classificar/saveProduto', ClassificarController.setProduto);
 
 router.post('/categoriasForm/find', CategoriasControlller.getFindCategoriasForm);
 router.post('/categoriasForm/save', CategoriasControlller.setCategoriasForm);

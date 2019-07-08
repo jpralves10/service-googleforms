@@ -4,9 +4,6 @@ import * as db from './classificacao.database'
 
 import dadosMock from './classificacao.mock';
 import * as sheet from './classificacao.sheet';
-import { ICategoriasForm } from 'src/models/categoriasForm';
-
-const spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
 
 //var request = require('request');
 
@@ -36,6 +33,8 @@ export const setClassificacao = async (req: Request, res: Response) => {
     var colunas: any = [];
     var respostas: any = [];
 
+    //console.log('parametros ', parametros)
+
     /*let parametros = {
         spreadsheetId: spreadsheetId,
         idSheet: 1997890537,
@@ -45,8 +44,6 @@ export const setClassificacao = async (req: Request, res: Response) => {
     //console.log('parametros ', parametros)
 
     await sheet.getSpreedsheet(parametros.spreadsheetId, 'A1:ZZZ100000').then(item => {
-
-        console.log('Sheet ', sheet)
 
         item.forEach((sheet, i) => {
             i == 0 ?
@@ -111,6 +108,7 @@ export const setClassificacao = async (req: Request, res: Response) => {
     const getHeader = async (classificacao:IClassificacao) => {
         classificacao.spreadsheetId = parametros.spreadsheetId;
         classificacao.idSheet = parametros.idSheet;
+        classificacao.iframe = parametros.iframe;
         classificacao.titulo = parametros.titulo;
         classificacao.status = parametros.status;
         classificacao.dataCriacao = parametros.dataCriacao;

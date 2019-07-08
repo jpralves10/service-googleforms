@@ -19,6 +19,12 @@ exports.integradosCollection = exports.crawlerDB.then(function (db) {
 exports.classificacaoCollection = exports.crawlerDB.then(function (db) {
     return db.collection('classificacao');
 });
+exports.classificarCollection = exports.crawlerDB.then(function (db) {
+    return db.collection('classificarProduto');
+});
+exports.preencherCollection = exports.crawlerDB.then(function (db) {
+    return db.collection('prencherForm');
+});
 exports.categoriasFormCollection = exports.crawlerDB.then(function (db) {
     return db.collection('categoriasForm');
 });

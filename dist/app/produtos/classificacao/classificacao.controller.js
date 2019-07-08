@@ -45,7 +45,6 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var db = __importStar(require("./classificacao.database"));
 var sheet = __importStar(require("./classificacao.sheet"));
-var spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
 //var request = require('request');
 // Classificacao
 exports.setClassificacaoEmail = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
@@ -74,6 +73,7 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                 parametros = req.body[0];
                 colunas = [];
                 respostas = [];
+                //console.log('parametros ', parametros)
                 /*let parametros = {
                     spreadsheetId: spreadsheetId,
                     idSheet: 1997890537,
@@ -81,7 +81,6 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                 };*/
                 //console.log('parametros ', parametros)
                 return [4 /*yield*/, sheet.getSpreedsheet(parametros.spreadsheetId, 'A1:ZZZ100000').then(function (item) {
-                        console.log('Sheet ', sheet);
                         item.forEach(function (sheet, i) {
                             i == 0 ?
                                 sheet.forEach(function (item) { colunas.push(item); }) :
@@ -116,6 +115,7 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                         }
                     })];
             case 1:
+                //console.log('parametros ', parametros)
                 /*let parametros = {
                     spreadsheetId: spreadsheetId,
                     idSheet: 1997890537,
@@ -143,6 +143,7 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                     return __generator(this, function (_a) {
                         classificacao.spreadsheetId = parametros.spreadsheetId;
                         classificacao.idSheet = parametros.idSheet;
+                        classificacao.iframe = parametros.iframe;
                         classificacao.titulo = parametros.titulo;
                         classificacao.status = parametros.status;
                         classificacao.dataCriacao = parametros.dataCriacao;
