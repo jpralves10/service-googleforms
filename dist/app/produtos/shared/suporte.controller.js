@@ -43,45 +43,34 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var db = __importStar(require("./preencher.database"));
-exports.setProduto = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+var db = __importStar(require("./suporte.database"));
+exports.setSuporte = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        exports.setPreencherForm(req, res);
+        exports.setSuporteForm(req, res, req.body.opcional);
         res.send('200');
         return [2 /*return*/];
     });
 }); };
-exports.setPreencherForm = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var preencher;
+exports.setSuporteForm = function (req, res, opcional) { return __awaiter(_this, void 0, void 0, function () {
+    var suporte;
     return __generator(this, function (_a) {
-        preencher = {};
-        preencher.titulo = req.body.descricaoBruta;
-        preencher.version = 0;
-        preencher.status = 'Classificar';
-        preencher.dataCriacao = new Date;
-        preencher.dataAtualizacao = new Date;
-        preencher.produto = req.body;
-        db.preencherFindAll().then(function (listdb) {
-            var check = false;
-            listdb.forEach(function (classificardb) {
-                if (classificardb.produto._id == preencher.produto._id) {
-                    check = true;
-                }
-            });
-            if (!check) {
-                db.preencherFindMaxCodigo().then(function (list) {
-                    if (list[0] == undefined) {
-                        preencher.codigo = 0;
-                    }
-                    else {
-                        preencher.codigo = (list[0].max + 1);
-                    }
-                    db.preencherSave(preencher).then(function (ret) {
-                        console.log('AA1> ', ret);
-                    });
-                });
-            }
-        });
+        suporte = {};
+        suporte.titulo = opcional.titulo;
+        suporte.version = 0;
+        suporte.status = 'Pendente';
+        suporte.dataCriacao = new Date;
+        suporte.dataAtualizacao = new Date;
+        /*_id?: any
+        codigo:number,
+        titulo?: string,
+        descricao?: string,
+        email: string,
+        nome: string,
+        version?: number,
+        status?: string;
+        dataCriacao?: Date,
+        dataAtualizacao?: Date*/
+        db.suporteSave(suporte).then(function (ret) { });
         return [2 /*return*/];
     });
 }); };

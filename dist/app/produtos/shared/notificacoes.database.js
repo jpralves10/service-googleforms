@@ -38,15 +38,15 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 //import { ObjectId } from 'bson';
 var mongodb_1 = require("../../../database/mongodb");
-// Preencher
-exports.preencherSave = function (preencher) { return __awaiter(_this, void 0, void 0, function () {
+// Notificacoes
+exports.notificacoesSave = function (notificacoes) { return __awaiter(_this, void 0, void 0, function () {
     var col;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.preencherCollection];
+            case 0: return [4 /*yield*/, mongodb_1.notificacoesCollection];
             case 1:
                 col = _a.sent();
-                return [4 /*yield*/, col.insertOne(preencher).catch(function (e) {
+                return [4 /*yield*/, col.insertOne(notificacoes).catch(function (e) {
                         console.log(e);
                     })];
             case 2:
@@ -55,16 +55,16 @@ exports.preencherSave = function (preencher) { return __awaiter(_this, void 0, v
         }
     });
 }); };
-exports.preencherUpdate = function (preencher) { return __awaiter(_this, void 0, void 0, function () {
-    var col, query, newPreencher;
+exports.notificacoesUpdate = function (notificacoes) { return __awaiter(_this, void 0, void 0, function () {
+    var col, query, newNotificacoes;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.preencherCollection];
+            case 0: return [4 /*yield*/, mongodb_1.notificacoesCollection];
             case 1:
                 col = _a.sent();
-                query = { codigo: preencher.codigo };
-                newPreencher = { $set: preencher };
-                return [4 /*yield*/, col.updateOne(query, newPreencher).catch(function (e) {
+                query = { codigo: notificacoes.codigo };
+                newNotificacoes = { $set: notificacoes };
+                return [4 /*yield*/, col.updateOne(query, newNotificacoes).catch(function (e) {
                         console.log(e);
                     })];
             case 2:
@@ -73,11 +73,11 @@ exports.preencherUpdate = function (preencher) { return __awaiter(_this, void 0,
         }
     });
 }); };
-exports.preencherFindAll = function () { return __awaiter(_this, void 0, void 0, function () {
+exports.notificacoesFindAll = function () { return __awaiter(_this, void 0, void 0, function () {
     var col;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.preencherCollection];
+            case 0: return [4 /*yield*/, mongodb_1.notificacoesCollection];
             case 1:
                 col = _a.sent();
                 return [4 /*yield*/, col.find({}).toArray()];
@@ -85,11 +85,11 @@ exports.preencherFindAll = function () { return __awaiter(_this, void 0, void 0,
         }
     });
 }); };
-exports.preencherFindByCodigo = function (codigo) { return __awaiter(_this, void 0, void 0, function () {
+exports.notificacoesFindByCodigo = function (codigo) { return __awaiter(_this, void 0, void 0, function () {
     var col;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.preencherCollection];
+            case 0: return [4 /*yield*/, mongodb_1.notificacoesCollection];
             case 1:
                 col = _a.sent();
                 return [4 /*yield*/, col.find({ codigo: codigo }).toArray()];
@@ -97,11 +97,11 @@ exports.preencherFindByCodigo = function (codigo) { return __awaiter(_this, void
         }
     });
 }); };
-exports.preencherFindMaxCodigo = function () { return __awaiter(_this, void 0, void 0, function () {
+exports.notificacoesFindMaxCodigo = function () { return __awaiter(_this, void 0, void 0, function () {
     var col;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, mongodb_1.preencherCollection];
+            case 0: return [4 /*yield*/, mongodb_1.notificacoesCollection];
             case 1:
                 col = _a.sent();
                 return [4 /*yield*/, col.aggregate([{ $group: { _id: null, max: { $max: "$codigo" } } }]).toArray()];
@@ -109,3 +109,7 @@ exports.preencherFindMaxCodigo = function () { return __awaiter(_this, void 0, v
         }
     });
 }); };
+/*export const classificacaoFindByIdCodigoAndVersion = async (spreadsheetId:string, idSheet:string, version:number) => {
+    const col = await notificacoesCollection;
+    return await col.find({spreadsheetId:spreadsheetId, idSheet: idSheet, version:version}).toArray() as INotificacoes[];
+}*/ 

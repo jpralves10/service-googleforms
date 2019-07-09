@@ -43,45 +43,61 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var db = __importStar(require("./preencher.database"));
+var db = __importStar(require("./classificar.database"));
+var PreencherController = __importStar(require("./preencher.controller"));
+var NotificacoesController = __importStar(require("../shared/notificacoes.controller"));
 exports.setProduto = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var classificar;
     return __generator(this, function (_a) {
-        exports.setPreencherForm(req, res);
-        res.send('200');
-        return [2 /*return*/];
-    });
-}); };
-exports.setPreencherForm = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var preencher;
-    return __generator(this, function (_a) {
-        preencher = {};
-        preencher.titulo = req.body.descricaoBruta;
-        preencher.version = 0;
-        preencher.status = 'Classificar';
-        preencher.dataCriacao = new Date;
-        preencher.dataAtualizacao = new Date;
-        preencher.produto = req.body;
-        db.preencherFindAll().then(function (listdb) {
+        classificar = {};
+        classificar.titulo = req.body.descricaoBruta;
+        classificar.version = 0;
+        classificar.status = 'Classificar';
+        classificar.dataCriacao = new Date;
+        classificar.dataAtualizacao = new Date;
+        classificar.produto = req.body;
+        db.classificarFindAll().then(function (listdb) {
             var check = false;
             listdb.forEach(function (classificardb) {
-                if (classificardb.produto._id == preencher.produto._id) {
+                if (classificardb.produto._id == classificar.produto._id) {
                     check = true;
                 }
             });
             if (!check) {
-                db.preencherFindMaxCodigo().then(function (list) {
+                db.classificarFindMaxCodigo().then(function (list) {
                     if (list[0] == undefined) {
-                        preencher.codigo = 0;
+                        classificar.codigo = 0;
                     }
                     else {
-                        preencher.codigo = (list[0].max + 1);
+                        classificar.codigo = (list[0].max + 1);
                     }
-                    db.preencherSave(preencher).then(function (ret) {
-                        console.log('AA1> ', ret);
+                    db.classificarSave(classificar).then(function (ret) {
+                        PreencherController.setPreencherForm(req, res);
+                        NotificacoesController.setNotificacaoForm(req, res, {
+                            titulo: 'Classificar Produto',
+                            tela: '/classificacao-preencher',
+                            produto: classificar.produto._id
+                        });
                     });
                 });
             }
         });
+        res.send('200');
+        return [2 /*return*/];
+    });
+}); };
+exports.setClassificar = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        return [2 /*return*/];
+    });
+}); };
+exports.getFindClassificar = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        return [2 /*return*/];
+    });
+}); };
+exports.getFindAllClassificar = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
         return [2 /*return*/];
     });
 }); };

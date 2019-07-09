@@ -43,45 +43,26 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var db = __importStar(require("./preencher.database"));
-exports.setProduto = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+var db = __importStar(require("./notificacoes.database"));
+exports.setNotificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        exports.setPreencherForm(req, res);
+        exports.setNotificacaoForm(req, res, req.body.opcional);
         res.send('200');
         return [2 /*return*/];
     });
 }); };
-exports.setPreencherForm = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var preencher;
+exports.setNotificacaoForm = function (req, res, opcional) { return __awaiter(_this, void 0, void 0, function () {
+    var notificacao;
     return __generator(this, function (_a) {
-        preencher = {};
-        preencher.titulo = req.body.descricaoBruta;
-        preencher.version = 0;
-        preencher.status = 'Classificar';
-        preencher.dataCriacao = new Date;
-        preencher.dataAtualizacao = new Date;
-        preencher.produto = req.body;
-        db.preencherFindAll().then(function (listdb) {
-            var check = false;
-            listdb.forEach(function (classificardb) {
-                if (classificardb.produto._id == preencher.produto._id) {
-                    check = true;
-                }
-            });
-            if (!check) {
-                db.preencherFindMaxCodigo().then(function (list) {
-                    if (list[0] == undefined) {
-                        preencher.codigo = 0;
-                    }
-                    else {
-                        preencher.codigo = (list[0].max + 1);
-                    }
-                    db.preencherSave(preencher).then(function (ret) {
-                        console.log('AA1> ', ret);
-                    });
-                });
-            }
-        });
+        notificacao = {};
+        notificacao.titulo = opcional.titulo;
+        notificacao.tela = opcional.tela;
+        notificacao.produto = opcional.produto;
+        notificacao.version = 0;
+        notificacao.status = 'Pendente';
+        notificacao.dataCriacao = new Date;
+        notificacao.dataAtualizacao = new Date;
+        db.notificacoesSave(notificacao).then(function (ret) { });
         return [2 /*return*/];
     });
 }); };

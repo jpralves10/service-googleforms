@@ -13,6 +13,8 @@ var ClassificacaoController = __importStar(require("./classificacao/classificaca
 var ComentariosControlller = __importStar(require("./classificacao/comentarios.controller"));
 var CategoriasControlller = __importStar(require("./classificacao/categorias-form.controller"));
 var ClassificarController = __importStar(require("./classificacao/classificar.controller"));
+var PreencherController = __importStar(require("./classificacao/preencher.controller"));
+var NotificacoesController = __importStar(require("./shared/notificacoes.controller"));
 //import * as GoogleAuth from './classificacao/classificacao.sheet';
 var router = express_1.Router();
 router.post('/filtro/catalogo', CatalogoController.filtro);
@@ -25,6 +27,11 @@ router.post('/classificar/findAll', ClassificarController.getFindAllClassificar)
 router.post('/classificar/find', ClassificarController.getFindClassificar);
 router.post('/classificar/save', ClassificarController.setClassificar);
 router.post('/classificar/saveProduto', ClassificarController.setProduto);
+/*router.post('/classificar/findAll', ClassificarController.getFindAllClassificar);
+router.post('/classificar/find', ClassificarController.getFindClassificar);
+router.post('/classificar/save', ClassificarController.setClassificar);*/
+router.post('/classificar/saveProduto', PreencherController.setProduto);
+router.post('/classificar/saveNotificacao', NotificacoesController.setNotificacao);
 router.post('/categoriasForm/find', CategoriasControlller.getFindCategoriasForm);
 router.post('/categoriasForm/save', CategoriasControlller.setCategoriasForm);
 router.post('/categoriasForm/remove', CategoriasControlller.delCategoriasForm);

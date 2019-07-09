@@ -11,7 +11,7 @@ export const classificarSave = async (classificar:IClassificar) => {
     });
 }
 
-export const classificacaoUpdate = async (classificar:IClassificar) => {
+export const classificarUpdate = async (classificar:IClassificar) => {
     const col = await classificarCollection;
 
     var query = {codigo: classificar.codigo};

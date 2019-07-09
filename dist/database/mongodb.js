@@ -23,8 +23,14 @@ exports.classificarCollection = exports.crawlerDB.then(function (db) {
     return db.collection('classificarProduto');
 });
 exports.preencherCollection = exports.crawlerDB.then(function (db) {
-    return db.collection('prencherForm');
+    return db.collection('preencherForm');
 });
 exports.categoriasFormCollection = exports.crawlerDB.then(function (db) {
     return db.collection('categoriasForm');
+});
+exports.notificacoesCollection = exports.crawlerDB.then(function (db) {
+    return db.collection('notificacoes');
+});
+exports.suporteCollection = exports.crawlerDB.then(function (db) {
+    return db.collection('suporte');
 });

@@ -44,11 +44,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var db = __importStar(require("./classificar.database"));
+var PreencherController = __importStar(require("./preencher.controller"));
+var NotificacoesController = __importStar(require("../shared/notificacoes.controller"));
 exports.setProduto = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var classificar;
     return __generator(this, function (_a) {
         classificar = {};
-        classificar.titulo = 'Produto a ser classificado';
+        classificar.titulo = req.body.descricaoBruta;
         classificar.version = 0;
         classificar.status = 'Classificar';
         classificar.dataCriacao = new Date;
@@ -70,7 +72,13 @@ exports.setProduto = function (req, res) { return __awaiter(_this, void 0, void 
                         classificar.codigo = (list[0].max + 1);
                     }
                     db.classificarSave(classificar).then(function (ret) {
-                        console.log('AA1> ', ret);
+                        PreencherController.setPreencherForm(req, res);
+                        NotificacoesController.setNotificacaoForm(req, res, {
+                            titulo: 'Classificar Produto',
+                            tela: '/classificacao-preencher',
+                            produto: classificar.produto._id,
+                            descricaoProduto: classificar.produto.descricaoBruta
+                        });
                     });
                 });
             }
