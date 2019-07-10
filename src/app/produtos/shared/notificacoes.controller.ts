@@ -6,13 +6,15 @@ import { INotificacoes } from 'src/models/notificacoes';
 
 export const setNotificacao = async (req: Request, res: Response) => {
 
-    setNotificacaoForm(req, res, req.body.opcional)
+    setNotificacaoForm(req, res)
     res.send('200')
 }
 
-export const setNotificacaoForm = async (req: Request, res: Response, opcional?:{titulo: string, tela: string, produto: string, descricaoProduto: string} ) => {
+export const setNotificacaoForm = async (req: Request, res: Response) => {
 
     let notificacao = {} as INotificacoes;
+
+    let opcional:any = req.body.opcional
     
     notificacao.titulo = opcional.titulo
     notificacao.tela = opcional.tela
@@ -24,4 +26,23 @@ export const setNotificacaoForm = async (req: Request, res: Response, opcional?:
     notificacao.dataAtualizacao = new Date
 
     db.notificacoesSave(notificacao).then(ret => {})
+}
+
+export const getFindAllNotificacoes = async (req: Request, res: Response) => {
+
+    db.notificacoesFindAll().then((notificacoes) => {
+        notificacoes.length > 0 ? res.send(notificacoes) : res.send([]);
+    }).catch(function(e) {
+        console.log(e);
+    })
+}
+
+export const delNotificacoesForm = async (req: Request, res: Response) => {
+    let notificacoes = req.body;
+
+    if(notificacoes._id != undefined){
+        db.notificacoesFormFindByCodigoRemove(notificacoes).then(() => {
+            res.send('200')
+        })
+    }
 }

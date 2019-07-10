@@ -46,15 +46,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var db = __importStar(require("./notificacoes.database"));
 exports.setNotificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        exports.setNotificacaoForm(req, res, req.body.opcional);
+        exports.setNotificacaoForm(req, res);
         res.send('200');
         return [2 /*return*/];
     });
 }); };
-exports.setNotificacaoForm = function (req, res, opcional) { return __awaiter(_this, void 0, void 0, function () {
-    var notificacao;
+exports.setNotificacaoForm = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var notificacao, opcional;
     return __generator(this, function (_a) {
         notificacao = {};
+        opcional = req.body.opcional;
         notificacao.titulo = opcional.titulo;
         notificacao.tela = opcional.tela;
         notificacao.produto = opcional.produto;
@@ -64,6 +65,28 @@ exports.setNotificacaoForm = function (req, res, opcional) { return __awaiter(_t
         notificacao.dataCriacao = new Date;
         notificacao.dataAtualizacao = new Date;
         db.notificacoesSave(notificacao).then(function (ret) { });
+        return [2 /*return*/];
+    });
+}); };
+exports.getFindAllNotificacoes = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        db.notificacoesFindAll().then(function (notificacoes) {
+            notificacoes.length > 0 ? res.send(notificacoes) : res.send([]);
+        }).catch(function (e) {
+            console.log(e);
+        });
+        return [2 /*return*/];
+    });
+}); };
+exports.delNotificacoesForm = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var notificacoes;
+    return __generator(this, function (_a) {
+        notificacoes = req.body;
+        if (notificacoes._id != undefined) {
+            db.notificacoesFormFindByCodigoRemove(notificacoes).then(function () {
+                res.send('200');
+            });
+        }
         return [2 /*return*/];
     });
 }); };

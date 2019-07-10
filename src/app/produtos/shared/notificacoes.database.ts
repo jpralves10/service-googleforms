@@ -1,4 +1,4 @@
-//import { ObjectId } from 'bson';
+import { ObjectId } from 'bson';
 import { notificacoesCollection } from '../../../database/mongodb';
 import { INotificacoes } from 'src/models/notificacoes';
 
@@ -18,6 +18,15 @@ export const notificacoesUpdate = async (notificacoes:INotificacoes) => {
     var newNotificacoes = {$set: notificacoes};
 
     await col.updateOne(query, newNotificacoes).catch(function(e) {
+        console.log(e);
+    });
+}
+
+export const notificacoesFormFindByCodigoRemove = async (notificacoes:INotificacoes) => {
+    const col = await notificacoesCollection;
+
+    var query = {_id: new ObjectId(notificacoes._id)};
+    return await col.deleteOne(query).catch(function(e) {
         console.log(e);
     });
 }

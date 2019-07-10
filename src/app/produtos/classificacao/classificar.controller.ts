@@ -35,19 +35,18 @@ export const setProduto = async (req: Request, res: Response) => {
                 }else{
                     classificar.codigo = (list[0].max + 1)
                 }
-                
+
                 db.classificarSave(classificar).then(ret => {
                     PreencherController.setPreencherForm(req, res);
-                    NotificacoesController.setNotificacaoForm(
-                        req, 
-                        res, 
-                        {
-                            titulo: 'Classificar Produto', 
-                            tela: '/classificacao-preencher', 
-                            produto: classificar.produto._id as string ,
-                            descricaoProduto: classificar.produto.descricaoBruta
-                        }
-                    )
+
+                    req.body.opcional = {
+                        titulo: 'Classificar Produto', 
+                        tela: '/classificacao-preencher', 
+                        produto: classificar.produto._id as string ,
+                        descricaoProduto: classificar.produto.descricaoBruta
+                    }
+
+                    NotificacoesController.setNotificacaoForm(req, res)
                 })
             })
         }
@@ -75,9 +74,9 @@ export const getFindClassificar = async (req: Request, res: Response) => {
 
 export const getFindAllClassificar = async (req: Request, res: Response) => {
 
-    /*db.classificacaoFindAll().then((classificacoes) => {
+    db.classificarFindAll().then((classificacoes) => {
         classificacoes.length > 0 ? res.send(classificacoes) : res.send([]);
     }).catch(function(e) {
         console.log(e);
-    })*/
+    })
 }

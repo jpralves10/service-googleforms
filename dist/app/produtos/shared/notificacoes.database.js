@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-//import { ObjectId } from 'bson';
+var bson_1 = require("bson");
 var mongodb_1 = require("../../../database/mongodb");
 // Notificacoes
 exports.notificacoesSave = function (notificacoes) { return __awaiter(_this, void 0, void 0, function () {
@@ -70,6 +70,21 @@ exports.notificacoesUpdate = function (notificacoes) { return __awaiter(_this, v
             case 2:
                 _a.sent();
                 return [2 /*return*/];
+        }
+    });
+}); };
+exports.notificacoesFormFindByCodigoRemove = function (notificacoes) { return __awaiter(_this, void 0, void 0, function () {
+    var col, query;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, mongodb_1.notificacoesCollection];
+            case 1:
+                col = _a.sent();
+                query = { _id: new bson_1.ObjectId(notificacoes._id) };
+                return [4 /*yield*/, col.deleteOne(query).catch(function (e) {
+                        console.log(e);
+                    })];
+            case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };

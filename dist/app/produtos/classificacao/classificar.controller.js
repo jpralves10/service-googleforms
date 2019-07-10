@@ -73,12 +73,13 @@ exports.setProduto = function (req, res) { return __awaiter(_this, void 0, void 
                     }
                     db.classificarSave(classificar).then(function (ret) {
                         PreencherController.setPreencherForm(req, res);
-                        NotificacoesController.setNotificacaoForm(req, res, {
+                        req.body.opcional = {
                             titulo: 'Classificar Produto',
                             tela: '/classificacao-preencher',
                             produto: classificar.produto._id,
                             descricaoProduto: classificar.produto.descricaoBruta
-                        });
+                        };
+                        NotificacoesController.setNotificacaoForm(req, res);
                     });
                 });
             }
@@ -99,6 +100,11 @@ exports.getFindClassificar = function (req, res) { return __awaiter(_this, void 
 }); };
 exports.getFindAllClassificar = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
+        db.classificarFindAll().then(function (classificacoes) {
+            classificacoes.length > 0 ? res.send(classificacoes) : res.send([]);
+        }).catch(function (e) {
+            console.log(e);
+        });
         return [2 /*return*/];
     });
 }); };
