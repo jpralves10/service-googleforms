@@ -4,6 +4,7 @@ import * as db from './classificacao.database'
 
 import dadosMock from './classificacao.mock';
 import * as sheet from './classificacao.sheet';
+import { IClassificar } from 'src/models/classificar';
 
 //var request = require('request');
 
@@ -32,14 +33,6 @@ export const setClassificacao = async (req: Request, res: Response) => {
     var parametros = req.body[0]
     var colunas: any = [];
     var respostas: any = [];
-
-    //console.log('parametros ', parametros)
-
-    /*let parametros = {
-        spreadsheetId: spreadsheetId,
-        idSheet: 1997890537,
-        titulo: 'FORMULÁRIO NCM - HCX CONSULTORIA'
-    };*/
 
     //console.log('parametros ', parametros)
 

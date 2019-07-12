@@ -3,19 +3,19 @@ import * as db from './classificar.database'
 import { IProduto } from 'src/models/produtos';
 import { IClassificar } from 'src/models/classificar';
 
-import * as PreencherController from './preencher.controller';
 import * as NotificacoesController from '../shared/notificacoes.controller';
 
-export const setProduto = async (req: Request, res: Response) => {
+export const classificarSave = async (req: Request, res: Response) => {
 
     let classificar = {} as IClassificar;
-    
-    classificar.titulo = req.body.descricaoBruta
+
+    classificar.titulo = req.body[1].descricaoBruta
     classificar.version = 0
     classificar.status = 'Classificar'
     classificar.dataCriacao = new Date
     classificar.dataAtualizacao = new Date
-    classificar.produto = req.body
+    classificar.usuario = req.body[0]
+    classificar.produto = req.body[1]
 
     db.classificarFindAll().then(listdb => {
 
@@ -37,7 +37,6 @@ export const setProduto = async (req: Request, res: Response) => {
                 }
 
                 db.classificarSave(classificar).then(ret => {
-                    PreencherController.setPreencherForm(req, res);
 
                     req.body.opcional = {
                         titulo: 'Classificar Produto', 

@@ -1,4 +1,5 @@
 import { IProduto } from "./produtos";
+import { IClassificacao } from "./classificacao";
 
 export interface IClassificar {
 
@@ -9,5 +10,7 @@ export interface IClassificar {
     status?: string;
     dataCriacao?: Date,
     dataAtualizacao?: Date,
+    usuario?: {nome:string, email:string};
     produto?: IProduto
+    classificacao?: IClassificacao
 }

@@ -74,12 +74,6 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                 colunas = [];
                 respostas = [];
                 //console.log('parametros ', parametros)
-                /*let parametros = {
-                    spreadsheetId: spreadsheetId,
-                    idSheet: 1997890537,
-                    titulo: 'FORMULÁRIO NCM - HCX CONSULTORIA'
-                };*/
-                //console.log('parametros ', parametros)
                 return [4 /*yield*/, sheet.getSpreedsheet(parametros.spreadsheetId, 'A1:ZZZ100000').then(function (item) {
                         item.forEach(function (sheet, i) {
                             i == 0 ?
@@ -115,12 +109,6 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                         }
                     })];
             case 1:
-                //console.log('parametros ', parametros)
-                /*let parametros = {
-                    spreadsheetId: spreadsheetId,
-                    idSheet: 1997890537,
-                    titulo: 'FORMULÁRIO NCM - HCX CONSULTORIA'
-                };*/
                 //console.log('parametros ', parametros)
                 _a.sent();
                 setSortClassificacoes = function (classificacoes) {

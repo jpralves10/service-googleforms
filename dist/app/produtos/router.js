@@ -12,9 +12,8 @@ var CatalogoController = __importStar(require("./catalogo/catalogo.controller"))
 var ClassificacaoController = __importStar(require("./classificacao/classificacao.controller"));
 var ComentariosControlller = __importStar(require("./classificacao/comentarios.controller"));
 var CategoriasControlller = __importStar(require("./classificacao/categorias-form.controller"));
-var ClassificarController = __importStar(require("./classificacao/classificar.controller"));
-var PreencherController = __importStar(require("./classificacao/preencher.controller"));
 var NotificacoesController = __importStar(require("./shared/notificacoes.controller"));
+var ClassificarController = __importStar(require("./classificacao/classificar.controller"));
 //import * as GoogleAuth from './classificacao/classificacao.sheet';
 var router = express_1.Router();
 router.post('/filtro/catalogo', CatalogoController.filtro);
@@ -23,14 +22,12 @@ router.post('/comentario/save', ComentariosControlller.setComentarios);
 router.post('/classificacao/findAll', ClassificacaoController.getFindAllClassificacao);
 router.post('/classificacao/find', ClassificacaoController.getFindClassificacao);
 router.post('/classificacao/save', ClassificacaoController.setClassificacao);
+/* Avaliar>>> */
+router.post('/classificar/classificarSave', ClassificarController.classificarSave);
+router.post('/classificar/save', ClassificarController.setClassificar);
 router.post('/classificar/findAll', ClassificarController.getFindAllClassificar);
 router.post('/classificar/find', ClassificarController.getFindClassificar);
-router.post('/classificar/save', ClassificarController.setClassificar);
-router.post('/classificar/saveProduto', ClassificarController.setProduto);
-/*router.post('/preencher/findAll', ClassificarController.getFindAllClassificar);
-router.post('/preencher/find', ClassificarController.getFindClassificar);
-router.post('/preencher/save', ClassificarController.setClassificar);*/
-router.post('/preencher/saveProduto', PreencherController.setProduto);
+/* >>> */
 router.post('/notificacoes/findAll', NotificacoesController.getFindAllNotificacoes);
 router.post('/notificacoes/saveNotificacao', NotificacoesController.setNotificacao);
 router.post('/notificacoes/remove', NotificacoesController.delNotificacoesForm);
