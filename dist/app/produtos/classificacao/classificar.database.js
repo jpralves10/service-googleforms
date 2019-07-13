@@ -36,7 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-//import { ObjectId } from 'bson';
 var mongodb_1 = require("../../../database/mongodb");
 // Classificar
 exports.classificarSave = function (classificar) { return __awaiter(_this, void 0, void 0, function () {
@@ -70,6 +69,21 @@ exports.classificarUpdate = function (classificar) { return __awaiter(_this, voi
             case 2:
                 _a.sent();
                 return [2 /*return*/];
+        }
+    });
+}); };
+exports.classificarFindByCodigoRemove = function (classificar) { return __awaiter(_this, void 0, void 0, function () {
+    var col, query;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, mongodb_1.classificarCollection];
+            case 1:
+                col = _a.sent();
+                query = { codigo: classificar.codigo };
+                return [4 /*yield*/, col.deleteOne(query).catch(function (e) {
+                        console.log(e);
+                    })];
+            case 2: return [2 /*return*/, _a.sent()];
         }
     });
 }); };

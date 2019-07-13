@@ -71,6 +71,7 @@ exports.classificarSave = function (req, res) { return __awaiter(_this, void 0, 
                     else {
                         classificar.codigo = (list[0].max + 1);
                     }
+                    classificar.classificacao = undefined;
                     db.classificarSave(classificar).then(function (ret) {
                         req.body.opcional = {
                             titulo: 'Classificar Produto',
@@ -88,7 +89,14 @@ exports.classificarSave = function (req, res) { return __awaiter(_this, void 0, 
     });
 }); };
 exports.setClassificar = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var classificar;
     return __generator(this, function (_a) {
+        classificar = req.body;
+        db.classificarFindByCodigoRemove(classificar).then(function (ret) {
+            db.classificarSave(classificar).then(function (listdb) {
+                res.send('200');
+            });
+        }).catch(function (error) { });
         return [2 /*return*/];
     });
 }); };

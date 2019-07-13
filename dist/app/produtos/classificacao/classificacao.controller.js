@@ -74,7 +74,7 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                 colunas = [];
                 respostas = [];
                 //console.log('parametros ', parametros)
-                return [4 /*yield*/, sheet.getSpreedsheet(parametros.spreadsheetId, 'A1:ZZZ100000').then(function (item) {
+                return [4 /*yield*/, sheet.getSpreedsheet(parametros.spreadsheetId, 'A1:ZZZ10000').then(function (item) {
                         item.forEach(function (sheet, i) {
                             i == 0 ?
                                 sheet.forEach(function (item) { colunas.push(item); }) :

@@ -36,6 +36,8 @@ export const classificarSave = async (req: Request, res: Response) => {
                     classificar.codigo = (list[0].max + 1)
                 }
 
+                classificar.classificacao = undefined
+
                 db.classificarSave(classificar).then(ret => {
 
                     req.body.opcional = {
@@ -56,19 +58,22 @@ export const classificarSave = async (req: Request, res: Response) => {
 
 export const setClassificar = async (req: Request, res: Response) => {
 
+    let classificar = req.body
+
+    db.classificarFindByCodigoRemove(classificar).then(ret => {
+        db.classificarSave(classificar).then(listdb => {
+            res.send('200')
+        })
+    }).catch(error => {})
 }
 
 export const getFindClassificar = async (req: Request, res: Response) => {
 
-    /*let classificacao: IProduto = req.body;
+    /*let classificar = req.body
 
-    db.classificacaoFindBySpreadsheetId(
-        classificacao.spreadsheetId
-    ).then((classificacoes) => {
-        classificacoes.length > 0 ? res.send(classificacoes) : res.send([])
-    }).catch(function(e) {
-        console.log(e);
-    })*/
+    db.classificarFindByCodigo(classificar.codigo).then((classificar) => {
+        res.send(classificar)
+    }).catch(function(e) { console.log(e);})*/
 }
 
 export const getFindAllClassificar = async (req: Request, res: Response) => {

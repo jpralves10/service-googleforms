@@ -36,7 +36,7 @@ export const setClassificacao = async (req: Request, res: Response) => {
 
     //console.log('parametros ', parametros)
 
-    await sheet.getSpreedsheet(parametros.spreadsheetId, 'A1:ZZZ100000').then(item => {
+    await sheet.getSpreedsheet(parametros.spreadsheetId, 'A1:ZZZ10000').then(item => {
 
         item.forEach((sheet, i) => {
             i == 0 ?

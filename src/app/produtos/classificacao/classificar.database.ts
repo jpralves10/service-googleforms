@@ -1,6 +1,6 @@
-//import { ObjectId } from 'bson';
 import { classificarCollection } from '../../../database/mongodb';
 import { IClassificar } from 'src/models/classificar';
+import { ObjectId } from 'bson';
 
 // Classificar
 
@@ -18,6 +18,15 @@ export const classificarUpdate = async (classificar:IClassificar) => {
     var newClassificar = {$set: classificar};
 
     await col.updateOne(query, newClassificar).catch(function(e) {
+        console.log(e);
+    });
+}
+
+export const classificarFindByCodigoRemove = async (classificar:IClassificar) => {
+    const col = await classificarCollection;
+
+    var query = {codigo: classificar.codigo};
+    return await col.deleteOne(query).catch(function(e) {
         console.log(e);
     });
 }
