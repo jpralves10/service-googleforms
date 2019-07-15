@@ -52,7 +52,6 @@ export const classificarSave = async (req: Request, res: Response) => {
             })
         }
     });
-
     res.send('200')
 }
 
