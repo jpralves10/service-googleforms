@@ -10,23 +10,14 @@ exports.connection = mongodb_1.default.connect(credentials_1.MONGODB_CONNECTIONS
 });
 exports.crawlerDB = exports.connection.then(function (conn) { return conn.db('crawler') || conn.db('heroku_v5w2cb6t'); });
 /* Collections */
-exports.produtosCollection = exports.crawlerDB.then(function (db) {
-    return db.collection('produtos');
-});
-exports.integradosCollection = exports.crawlerDB.then(function (db) {
-    return db.collection('produtosIntegrados');
-});
 exports.classificacaoCollection = exports.crawlerDB.then(function (db) {
     return db.collection('classificacao');
 });
 exports.classificarCollection = exports.crawlerDB.then(function (db) {
-    return db.collection('classificarProduto');
-});
-exports.preencherCollection = exports.crawlerDB.then(function (db) {
-    return db.collection('preencherForm');
+    return db.collection('classificar');
 });
 exports.categoriasFormCollection = exports.crawlerDB.then(function (db) {
-    return db.collection('categoriasForm');
+    return db.collection('categorias');
 });
 exports.notificacoesCollection = exports.crawlerDB.then(function (db) {
     return db.collection('notificacoes');

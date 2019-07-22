@@ -16,6 +16,7 @@ export interface IClassificacao {
     }[],
     respostas?: {
         idResposta: string,
+        idProduto: string
         carimbo: string,
         campos: {
             idColuna: number,
@@ -26,6 +27,7 @@ export interface IClassificacao {
         idSheet: number,
         idComentario: number,
         idResposta: string,
+        idProduto: string,
         idColuna: number,
         idUsuario: string,
         nmUsuario: string,

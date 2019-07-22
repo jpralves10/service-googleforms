@@ -45,25 +45,26 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var db = __importStar(require("./classificacao.database"));
 var sheet = __importStar(require("./classificacao.sheet"));
+var fetch = require("node-fetch");
 //var request = require('request');
 // Classificacao
-exports.setClassificacaoEmail = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var parametros;
-    return __generator(this, function (_a) {
-        parametros = res.body;
-        db.classificacaoFindBySpreadsheetId(parametros.spreadsheetId).then(function (classificacoes) {
-            if (classificacoes.length > 0) {
-                classificacoes.forEach(function (classificacao) {
-                    var qtdRespostas = classificacao.respostas.length;
-                    var range = 'B' + qtdRespostas + ':' + 'B' + qtdRespostas;
-                    sheet.setSpreedsheetEmail(parametros.spreadsheetId, range, [parametros.idResposta]) ?
-                        res.send('200') : res.send('400');
-                });
-            }
-        });
-        return [2 /*return*/];
-    });
-}); };
+/*export const setClassificacaoEmail = async (req: Request, res: Response) => {
+
+    let parametros: {spreadsheetId: string, idResposta: string} = res.body
+
+    db.classificacaoFindBySpreadsheetId(parametros.spreadsheetId).then((classificacoes) => {
+        if(classificacoes.length > 0){
+            classificacoes.forEach(classificacao => {
+
+                let qtdRespostas = classificacao.respostas.length;
+                let range = 'B' + qtdRespostas + ':' + 'B' + qtdRespostas;
+
+                sheet.setSpreedsheetEmail(parametros.spreadsheetId, range, [parametros.idResposta]) ?
+                res.send('200') : res.send('400')
+            })
+        }
+    })
+}*/
 exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var parametros, colunas, respostas, setSortClassificacoes, setNewClassificacao, getHeader, getColunas, getRespostas, getVerificarVersao;
     var _this = this;
@@ -102,7 +103,7 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                             console.log(e);
                         });
                     }).catch(function (err) {
-                        var msgError = 'Error: The caller does not have permission';
+                        var msgError = 'Error: The caller does not have permission!';
                         var error = new RegExp(msgError);
                         if (error.exec(err) != null) {
                             res.send(msgError);
@@ -159,6 +160,7 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                             var campos = [];
                             var campo;
                             var idResposta = '';
+                            var idProduto = '';
                             var carimbo = '';
                             resposta.forEach(function (item, i) {
                                 if (i == 0) {
@@ -167,7 +169,10 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                                 else if (i == 1) {
                                     idResposta = item;
                                 }
-                                else if (i > 1) {
+                                else if (i == 2) {
+                                    idProduto = item;
+                                }
+                                else if (i > 2) {
                                     campo = {
                                         'idColuna': classificacao.colunas[i].idColuna,
                                         'deCampo': item
@@ -177,6 +182,7 @@ exports.setClassificacao = function (req, res) { return __awaiter(_this, void 0,
                             });
                             classificacao.respostas.push({
                                 'idResposta': idResposta,
+                                'idProduto': idProduto,
                                 'carimbo': carimbo,
                                 'campos': campos
                             });
@@ -219,6 +225,21 @@ exports.getFindClassificacao = function (req, res) { return __awaiter(_this, voi
         return [2 /*return*/];
     });
 }); };
+/*export const getFormGoogle = async (req: Request, res: Response) => {
+    fetch(`https://docs.google.com/forms/d/e/1FAIpQLScJJvPc4xlmPA2pGd5VIusBzbRok79W1VV_CcDmO6ZQi5aLJw/viewform?embedded=true`)
+    .then(ret => ret.text())
+    .then(body => {
+        //console.log(body)
+        res.send(body)
+    })
+    /*.then(ret => {
+        console.log(ret)
+        res.send(ret)
+    })* /
+    .catch(error => {
+        console.log(error)
+    })
+}*/
 exports.getFindAllClassificacao = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
         db.classificacaoFindAll().then(function (classificacoes) {

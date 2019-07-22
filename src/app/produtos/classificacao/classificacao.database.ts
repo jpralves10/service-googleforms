@@ -1,4 +1,4 @@
-//import { ObjectId } from 'bson';
+import { ObjectId } from 'bson';
 import { classificacaoCollection } from '../../../database/mongodb';
 import { IClassificacao } from '../../../models/classificacao';
 
@@ -18,6 +18,15 @@ export const classificacaoUpdate = async (classificacao:IClassificacao) => {
     var newClassificacao = {$set: classificacao};
 
     await col.updateOne(query, newClassificacao).catch(function(e) {
+        console.log(e);
+    });
+}
+
+export const classificacaoFindByCodigoRemove = async (classificacao:IClassificacao) => {
+    const col = await classificacaoCollection;
+
+    var query = {spreadsheetId: classificacao.spreadsheetId};
+    return await col.deleteOne(query).catch(function(e) {
         console.log(e);
     });
 }

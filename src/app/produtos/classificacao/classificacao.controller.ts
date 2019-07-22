@@ -6,11 +6,13 @@ import dadosMock from './classificacao.mock';
 import * as sheet from './classificacao.sheet';
 import { IClassificar } from 'src/models/classificar';
 
+const fetch = require("node-fetch");
+
 //var request = require('request');
 
 // Classificacao
 
-export const setClassificacaoEmail = async (req: Request, res: Response) => {
+/*export const setClassificacaoEmail = async (req: Request, res: Response) => {
 
     let parametros: {spreadsheetId: string, idResposta: string} = res.body
 
@@ -26,7 +28,7 @@ export const setClassificacaoEmail = async (req: Request, res: Response) => {
             })
         }
     })
-}
+}*/
 
 export const setClassificacao = async (req: Request, res: Response) => {
 
@@ -71,7 +73,7 @@ export const setClassificacao = async (req: Request, res: Response) => {
         })
 
     }).catch(err => {
-        var msgError = 'Error: The caller does not have permission';
+        var msgError = 'Error: The caller does not have permission!';
         const error = new RegExp(msgError)
 
         if(error.exec(err) != null){
@@ -130,6 +132,7 @@ export const setClassificacao = async (req: Request, res: Response) => {
             let campos:{ idColuna: number, deCampo: string }[] = [];
             let campo: { idColuna: number, deCampo: string };
             let idResposta: string = '';
+            let idProduto: string = '';
             let carimbo: string = '';
 
             resposta.forEach((item, i) => {
@@ -137,7 +140,9 @@ export const setClassificacao = async (req: Request, res: Response) => {
                     carimbo = item as string;
                 }else if(i == 1){
                     idResposta = item as string;
-                }else if(i > 1){
+                }else if(i == 2){
+                    idProduto = item as string;
+                }else if(i > 2){
                     campo = {
                         'idColuna': classificacao.colunas[i].idColuna as number,
                         'deCampo': item as string
@@ -147,6 +152,7 @@ export const setClassificacao = async (req: Request, res: Response) => {
             })
             classificacao.respostas.push({
                 'idResposta': idResposta,
+                'idProduto': idProduto,
                 'carimbo': carimbo,
                 'campos': campos
             })
@@ -186,6 +192,22 @@ export const getFindClassificacao = async (req: Request, res: Response) => {
         console.log(e);
     })
 }
+
+/*export const getFormGoogle = async (req: Request, res: Response) => {
+    fetch(`https://docs.google.com/forms/d/e/1FAIpQLScJJvPc4xlmPA2pGd5VIusBzbRok79W1VV_CcDmO6ZQi5aLJw/viewform?embedded=true`)
+    .then(ret => ret.text())
+    .then(body => {
+        //console.log(body) 
+        res.send(body)
+    })
+    /*.then(ret => {
+        console.log(ret)
+        res.send(ret)
+    })* /
+    .catch(error => {
+        console.log(error)
+    })
+}*/
 
 export const getFindAllClassificacao = async (req: Request, res: Response) => {
 

@@ -53,7 +53,8 @@ exports.getFindComentarios = function (req, res) { return __awaiter(_this, void 
         parametros = {
             spreadsheetId: '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ',
             idSheet: 1997890537,
-            idResposta: 'jean@eficilog.com'
+            idResposta: 'jean@eficilog.com',
+            idProduto: 'jean@eficilog.com'
         };
         comentarios = [];
         db.classificacaoFindBySpreadsheetId(parametros.spreadsheetId).then(function (classificacoes) {
@@ -61,7 +62,8 @@ exports.getFindComentarios = function (req, res) { return __awaiter(_this, void 
                 classificacoes.forEach(function (classificacao) {
                     if (classificacao.comentarios.length > 0) {
                         classificacao.comentarios.forEach(function (dbcomentario) {
-                            if (dbcomentario.idResposta == parametros.idResposta) {
+                            if (dbcomentario.idResposta == parametros.idResposta &&
+                                dbcomentario.idProduto == parametros.idProduto) {
                                 comentarios.push(dbcomentario);
                             }
                         });
@@ -89,6 +91,7 @@ exports.setComentarios = function (req, res) { return __awaiter(_this, void 0, v
                 classificacao.comentarios.forEach(function (dbcomentario) {
                     if (dbcomentario.idComentario == comentario_1.idComentario &&
                         dbcomentario.idResposta == comentario_1.idResposta &&
+                        dbcomentario.idProduto == comentario_1.idProduto &&
                         dbcomentario.idColuna == comentario_1.idColuna) {
                         dbcomentario.descricao = comentario_1.descricao;
                         dbcomentario.status = comentario_1.status;

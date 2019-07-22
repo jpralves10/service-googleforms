@@ -22,11 +22,14 @@ router.post('/comentario/save', ComentariosControlller.setComentarios);
 router.post('/classificacao/findAll', ClassificacaoController.getFindAllClassificacao);
 router.post('/classificacao/find', ClassificacaoController.getFindClassificacao);
 router.post('/classificacao/save', ClassificacaoController.setClassificacao);
+//router.post('/classificacao/formGoogle', ClassificacaoController.getFormGoogle);
 /* Avaliar>>> */
 router.post('/classificar/classificarSave', ClassificarController.classificarSave);
 router.post('/classificar/save', ClassificarController.setClassificar);
 router.post('/classificar/findAll', ClassificarController.getFindAllClassificar);
 router.post('/classificar/find', ClassificarController.getFindClassificar);
+router.post('/classificar/saveUpdate', ClassificarController.setClassificarUpdate);
+router.post('/classificar/saveSpreed', ClassificarController.setClassificarSpreed);
 /* >>> */
 router.post('/notificacoes/findAll', NotificacoesController.getFindAllNotificacoes);
 router.post('/notificacoes/saveNotificacao', NotificacoesController.setNotificacao);

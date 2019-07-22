@@ -12,7 +12,8 @@ export const getFindComentarios = async (req: Request, res: Response) => {
     let parametros = {
         spreadsheetId: '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ',
         idSheet: 1997890537,
-        idResposta: 'jean@eficilog.com'
+        idResposta: 'jean@eficilog.com',
+        idProduto: 'jean@eficilog.com'
     };
 
     let comentarios = [];
@@ -22,7 +23,8 @@ export const getFindComentarios = async (req: Request, res: Response) => {
             classificacoes.forEach(classificacao => {
                 if(classificacao.comentarios.length > 0){
                     classificacao.comentarios.forEach(dbcomentario => {
-                        if(dbcomentario.idResposta == parametros.idResposta){
+                        if(dbcomentario.idResposta == parametros.idResposta && 
+                            dbcomentario.idProduto == parametros.idProduto){
                             comentarios.push(dbcomentario)
                         }
                     })
@@ -43,6 +45,7 @@ export const setComentarios = async (req: Request, res: Response) => {
         idSheet: 1997890537,
         idComentario: null,
         idResposta: 'jean@eficilog.com',
+        idProduto: '5cd5c120538943001b09d62f',
         idColuna: 3,
         idUsuario: 'jean@eficilog.com',
         nmUsuario: 'Jean Alves',
@@ -69,6 +72,7 @@ export const setComentarios = async (req: Request, res: Response) => {
             classificacao.comentarios.forEach(dbcomentario => {
                 if(dbcomentario.idComentario == comentario.idComentario &&
                     dbcomentario.idResposta == comentario.idResposta &&
+                    dbcomentario.idProduto == comentario.idProduto &&
                     dbcomentario.idColuna == comentario.idColuna){
 
                     dbcomentario.descricao = comentario.descricao;

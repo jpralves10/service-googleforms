@@ -44,6 +44,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var db = __importStar(require("./classificar.database"));
+var db_classificacao = __importStar(require("./classificacao.database"));
+var sheet = __importStar(require("./classificacao.sheet"));
 var NotificacoesController = __importStar(require("../shared/notificacoes.controller"));
 exports.classificarSave = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var classificar;
@@ -72,6 +74,14 @@ exports.classificarSave = function (req, res) { return __awaiter(_this, void 0, 
                         classificar.codigo = (list[0].max + 1);
                     }
                     classificar.classificacao = undefined;
+                    //'A1:ZZZ10000'
+                    /*let N = classificar.classificacao.respostas.length + 2;
+    
+                    sheet.setSpreedsheetEmail(
+                        classificar.classificacao.spreadsheetId,
+                        'B'+N+':'+'B'+N,
+                        [classificar.usuario.email]
+                    ).then(item => {*/
                     db.classificarSave(classificar).then(function (ret) {
                         req.body.opcional = {
                             titulo: 'Classificar Produto',
@@ -81,6 +91,7 @@ exports.classificarSave = function (req, res) { return __awaiter(_this, void 0, 
                         };
                         NotificacoesController.setNotificacaoForm(req, res);
                     });
+                    //})
                 });
             }
         });
@@ -113,5 +124,97 @@ exports.getFindAllClassificar = function (req, res) { return __awaiter(_this, vo
             console.log(e);
         });
         return [2 /*return*/];
+    });
+}); };
+exports.setClassificarUpdate = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var classificar;
+    return __generator(this, function (_a) {
+        classificar = {};
+        classificar = req.body;
+        db.classificarFindByCodigoRemove(classificar).then(function (ret) {
+            db.classificarSave(classificar).then(function (ret2) { });
+        });
+        res.send('200');
+        return [2 /*return*/];
+    });
+}); };
+exports.setClassificarSpreed = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+    var classificar, colunas, respostas;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                classificar = {};
+                classificar = req.body;
+                colunas = [];
+                respostas = [];
+                //console.log('AAA1>> ', classificar.classificacao)
+                return [4 /*yield*/, sheet.getSpreedsheet(classificar.classificacao.spreadsheetId, 'A1:ZZZ10000').then(function (item) {
+                        item.forEach(function (sheet, i) {
+                            i == 0 ?
+                                sheet.forEach(function (item) { colunas.push(item); }) :
+                                respostas.push(sheet);
+                        });
+                        //console.log('AAA>> ', item)
+                        //if(getVerificarVersao(classificar.classificacao)){
+                        classificar.classificacao.respostas = [];
+                        respostas.forEach(function (resposta) {
+                            var campos = [];
+                            var campo;
+                            var idResposta = '';
+                            var idProduto = '';
+                            var carimbo = '';
+                            resposta.forEach(function (item, i) {
+                                if (i == 0) {
+                                    carimbo = item;
+                                }
+                                else if (i == 1) {
+                                    idResposta = item;
+                                }
+                                else if (i == 2) {
+                                    idProduto = item;
+                                }
+                                else if (i > 2) {
+                                    campo = {
+                                        'idColuna': classificar.classificacao.colunas[i].idColuna,
+                                        'deCampo': item
+                                    };
+                                    campos.push(campo);
+                                }
+                            });
+                            classificar.classificacao.respostas.push({
+                                'idResposta': idResposta,
+                                'idProduto': idProduto,
+                                'carimbo': carimbo,
+                                'campos': campos
+                            });
+                        });
+                        //console.log('AAA3>> ', classificar)
+                        //db.classificarUpdate(classificar);
+                        db.classificarFindByCodigoRemove(classificar).then(function (ret) {
+                            db.classificarSave(classificar).then(function (ret2) {
+                                db_classificacao.classificacaoFindByCodigoRemove(classificar.classificacao).then(function (ret) {
+                                    db_classificacao.classificacaoSave(classificar.classificacao).then(function (ret2) { });
+                                });
+                            });
+                        });
+                        res.send('200');
+                        /*}else{
+                            res.send('Error: Versão do formulário incompatível!')
+                        }*/
+                    }).catch(function (err) {
+                        var msgError = 'Error: The caller does not have permission!';
+                        var error = new RegExp(msgError);
+                        if (error.exec(err) != null) {
+                            res.send(msgError);
+                        }
+                        else {
+                            res.send('Error');
+                        }
+                    })];
+            case 1:
+                //console.log('AAA1>> ', classificar.classificacao)
+                _a.sent();
+                return [2 /*return*/];
+        }
     });
 }); };

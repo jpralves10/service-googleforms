@@ -16,28 +16,16 @@ export const crawlerDB = connection.then(conn => conn.db('crawler') || conn.db('
 
 /* Collections */
 
-export const produtosCollection = crawlerDB.then(db =>
-    db.collection<IProduto>('produtos')
-);
-
-export const integradosCollection = crawlerDB.then(db =>
-    db.collection<IProduto>('produtosIntegrados')
-);
-
 export const classificacaoCollection = crawlerDB.then(db =>
     db.collection<IClassificacao>('classificacao')
 );
 
 export const classificarCollection = crawlerDB.then(db =>
-    db.collection<IClassificar>('classificarProduto')
-);
-
-export const preencherCollection = crawlerDB.then(db =>
-    db.collection<IClassificar>('preencherForm')
+    db.collection<IClassificar>('classificar')
 );
 
 export const categoriasFormCollection = crawlerDB.then(db =>
-    db.collection<ICategoriasForm>('categoriasForm')
+    db.collection<ICategoriasForm>('categorias')
 );
 
 export const notificacoesCollection = crawlerDB.then(db =>
