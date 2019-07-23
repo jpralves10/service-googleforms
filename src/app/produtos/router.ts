@@ -5,6 +5,7 @@ import * as ComentariosControlller from './classificacao/comentarios.controller'
 import * as CategoriasControlller from './classificacao/categorias-form.controller';
 import * as NotificacoesController from './shared/notificacoes.controller';
 import * as ClassificarController from './classificacao/classificar.controller';
+import * as EmpresaController from './classificacao/empresa.controller';
 
 //import * as GoogleAuth from './classificacao/classificacao.sheet';
 
@@ -28,6 +29,9 @@ router.post('/classificar/find', ClassificarController.getFindClassificar);
 router.post('/classificar/saveUpdate', ClassificarController.setClassificarUpdate);
 router.post('/classificar/saveSpreed', ClassificarController.setClassificarSpreed);
 /* >>> */
+
+router.post('/empresa/empresaUpdate', EmpresaController.setEmpresaUpdate);
+router.post('/empresa/findAll', EmpresaController.getFindAllEmpresa);
 
 router.post('/notificacoes/findAll', NotificacoesController.getFindAllNotificacoes);
 router.post('/notificacoes/saveNotificacao', NotificacoesController.setNotificacao);

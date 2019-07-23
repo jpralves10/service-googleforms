@@ -7,6 +7,7 @@ import { ICategoriasForm } from '../models/categoriasForm';
 import { IClassificar } from 'src/models/classificar';
 import { INotificacoes } from 'src/models/notificacoes';
 import { ISuporte } from 'src/models/suporte';
+import { IEmpresa } from 'src/models/empresa';
 
 export const connection = mongo.connect(MONGODB_CONNECTIONSTRING, {
     useNewUrlParser: true
@@ -15,6 +16,10 @@ export const connection = mongo.connect(MONGODB_CONNECTIONSTRING, {
 export const crawlerDB = connection.then(conn => conn.db('crawler') || conn.db('heroku_v5w2cb6t'));
 
 /* Collections */
+
+export const empresaCollection = crawlerDB.then(db =>
+    db.collection<IEmpresa>('empresa')
+);
 
 export const classificacaoCollection = crawlerDB.then(db =>
     db.collection<IClassificacao>('classificacao')
