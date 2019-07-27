@@ -56,6 +56,7 @@ exports.setNotificacaoForm = function (req, res) { return __awaiter(_this, void 
     return __generator(this, function (_a) {
         notificacao = {};
         opcional = req.body.opcional;
+        notificacao.idEmail = opcional.idEmail;
         notificacao.titulo = opcional.titulo;
         notificacao.tela = opcional.tela;
         notificacao.produto = opcional.produto;

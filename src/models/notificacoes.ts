@@ -2,6 +2,7 @@
 export interface INotificacoes {
 
     _id?: any
+    idEmail:string,
     codigo:number,
     tela?:string,
     titulo?: string,

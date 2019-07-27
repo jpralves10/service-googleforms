@@ -25,6 +25,7 @@ export interface IClassificacao {
     }[],
     comentarios?: {
         idSheet: number,
+        idClassificar: number,
         idComentario: number,
         idResposta: string,
         idProduto: string,

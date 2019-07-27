@@ -54,9 +54,10 @@ export const classificarSave = async (req: Request, res: Response) => {
                     db.classificarSave(classificar).then(ret => {
 
                         req.body.opcional = {
-                            titulo: 'Classificar Produto', 
-                            tela: '/classificacao-preencher', 
-                            produto: classificar.produto._id as string ,
+                            idEmail: classificar.usuario.email,
+                            titulo: 'Classificar Produto',
+                            tela: '/classificacao-preencher',
+                            produto: classificar.produto._id as string,
                             descricaoProduto: classificar.produto.descricaoBruta
                         }
 
@@ -75,6 +76,17 @@ export const setClassificar = async (req: Request, res: Response) => {
 
     db.classificarFindByCodigoRemove(classificar).then(ret => {
         db.classificarSave(classificar).then(listdb => {
+
+            req.body.opcional = {
+                idEmail: classificar.usuario.email,
+                titulo: 'Classificar Produto',
+                tela: '/classificacao-preencher',
+                produto: classificar.produto._id as string,
+                descricaoProduto: classificar.produto.descricaoBruta
+            }
+
+            NotificacoesController.setNotificacaoForm(req, res)
+
             res.send('200')
         })
     }).catch(error => {})

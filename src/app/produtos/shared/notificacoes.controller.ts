@@ -16,6 +16,7 @@ export const setNotificacaoForm = async (req: Request, res: Response) => {
 
     let opcional:any = req.body.opcional
     
+    notificacao.idEmail = opcional.idEmail
     notificacao.titulo = opcional.titulo
     notificacao.tela = opcional.tela
     notificacao.produto = opcional.produto

@@ -84,6 +84,7 @@ exports.classificarSave = function (req, res) { return __awaiter(_this, void 0, 
                     ).then(item => {*/
                     db.classificarSave(classificar).then(function (ret) {
                         req.body.opcional = {
+                            idEmail: classificar.usuario.email,
                             titulo: 'Classificar Produto',
                             tela: '/classificacao-preencher',
                             produto: classificar.produto._id,
@@ -105,6 +106,14 @@ exports.setClassificar = function (req, res) { return __awaiter(_this, void 0, v
         classificar = req.body;
         db.classificarFindByCodigoRemove(classificar).then(function (ret) {
             db.classificarSave(classificar).then(function (listdb) {
+                req.body.opcional = {
+                    idEmail: classificar.usuario.email,
+                    titulo: 'Classificar Produto',
+                    tela: '/classificacao-preencher',
+                    produto: classificar.produto._id,
+                    descricaoProduto: classificar.produto.descricaoBruta
+                };
+                NotificacoesController.setNotificacaoForm(req, res);
                 res.send('200');
             });
         }).catch(function (error) { });
