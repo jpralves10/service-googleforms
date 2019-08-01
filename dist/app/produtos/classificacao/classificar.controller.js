@@ -56,6 +56,8 @@ exports.classificarSave = function (req, res) { return __awaiter(_this, void 0, 
         classificar.status = 'Classificar';
         classificar.dataCriacao = new Date;
         classificar.dataAtualizacao = new Date;
+        classificar.rating = 0;
+        classificar.ratingComentario = '';
         classificar.usuario = req.body[0];
         classificar.produto = req.body[1];
         db.classificarFindAll().then(function (listdb) {
@@ -83,14 +85,15 @@ exports.classificarSave = function (req, res) { return __awaiter(_this, void 0, 
                         [classificar.usuario.email]
                     ).then(item => {*/
                     db.classificarSave(classificar).then(function (ret) {
-                        req.body.opcional = {
+                        /*req.body.opcional = {
                             idEmail: classificar.usuario.email,
                             titulo: 'Classificar Produto',
                             tela: '/classificacao-preencher',
-                            produto: classificar.produto._id,
+                            produto: classificar.produto._id as string,
                             descricaoProduto: classificar.produto.descricaoBruta
-                        };
-                        NotificacoesController.setNotificacaoForm(req, res);
+                        }
+
+                        NotificacoesController.setNotificacaoForm(req, res)*/
                     });
                     //})
                 });
@@ -106,6 +109,53 @@ exports.setClassificar = function (req, res) { return __awaiter(_this, void 0, v
         classificar = req.body;
         db.classificarFindByCodigoRemove(classificar).then(function (ret) {
             db.classificarSave(classificar).then(function (listdb) {
+                var qtd = 0;
+                if (classificar.classificacao == undefined) {
+                    qtd = qtd + 2;
+                }
+                else {
+                    qtd = classificar.classificacao.respostas.length + 2;
+                }
+                sheet.setSpreedsheetEmail(//Email
+                '1XJ6yrnv2cni8irh-cGWhWTYZ0ZPYxAXy9UHOEj3sdU8', 'B' + qtd + ':' + 'B' + qtd, [classificar.usuario.email]).then(function (item) {
+                    /*sheet.setSpreedsheetEmail( //Código
+                        classificar.classificacao.spreadsheetId,
+                        'C' + qtd + ':' + 'C' + qtd,
+                        [classificar.produto._id]
+                    ).then(item => {
+                        sheet.setSpreedsheetEmail( //Descricao
+                            classificar.classificacao.spreadsheetId,
+                            'D' + qtd + ':' + 'D' + qtd,
+                            [classificar.produto.descricaoBruta]
+                        ).then(item => {
+                            sheet.setSpreedsheetEmail( //NCM
+                                classificar.classificacao.spreadsheetId,
+                                'E' + qtd + ':' + 'E' + qtd,
+                                [classificar.produto.ncm]
+                            ).then(item => {
+                                sheet.setSpreedsheetEmail( //Pais de Orígem
+                                    classificar.classificacao.spreadsheetId,
+                                    'F' + qtd + ':' + 'F' + qtd,
+                                    [classificar.produto.paisOrigem]
+                                ).then(item => {
+                                    sheet.setSpreedsheetEmail( //Fabricante
+                                        classificar.classificacao.spreadsheetId,
+                                        'G' + qtd + ':' + 'G' + qtd,
+                                        [classificar.produto.fabricanteNome]
+                                    ).then(item => {
+                                        sheet.setSpreedsheetEmail( //Fornecedor
+                                            classificar.classificacao.spreadsheetId,
+                                            'H' + qtd + ':' + 'H' + qtd,
+                                            [classificar.produto.fornecedorNome]
+                                        ).then(item => {})
+                                    })
+                                })
+                            })
+                        })
+                    })*/
+                }).catch(function (error) {
+                    console.log(error);
+                });
                 req.body.opcional = {
                     idEmail: classificar.usuario.email,
                     titulo: 'Classificar Produto',
@@ -136,13 +186,39 @@ exports.getFindAllClassificar = function (req, res) { return __awaiter(_this, vo
     });
 }); };
 exports.setClassificarUpdate = function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var classificar;
+    var classificar, googleNotes;
+    var _this = this;
     return __generator(this, function (_a) {
         classificar = {};
         classificar = req.body;
         db.classificarFindByCodigoRemove(classificar).then(function (ret) {
-            db.classificarSave(classificar).then(function (ret2) { });
+            db.classificarSave(classificar).then(function (ret2) {
+                googleNotes(classificar.classificacao);
+            });
         });
+        googleNotes = function (classificacao) { return __awaiter(_this, void 0, void 0, function () {
+            var parametro;
+            return __generator(this, function (_a) {
+                classificacao.comentarios.forEach(function (comentario) {
+                    comentario;
+                });
+                classificacao.respostas.forEach(function (resposta) {
+                    (resposta.idResposta);
+                });
+                parametro = {
+                    spreadsheetId: classificacao.spreadsheetId,
+                    sheetId: classificacao.idSheet,
+                    startRowIndex: 1,
+                    endRowIndex: 2,
+                    startColumnIndex: 1,
+                    endColumnIndex: 2,
+                    note: 'Teste de Nota de Email'
+                };
+                console.log(parametro);
+                sheet.setSpreedsheetNotes(parametro);
+                return [2 /*return*/];
+            });
+        }); };
         res.send('200');
         return [2 /*return*/];
     });

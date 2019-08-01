@@ -17,6 +17,8 @@ export const classificarSave = async (req: Request, res: Response) => {
     classificar.status = 'Classificar'
     classificar.dataCriacao = new Date
     classificar.dataAtualizacao = new Date
+    classificar.rating = 0
+    classificar.ratingComentario = ''
     classificar.usuario = req.body[0]
     classificar.produto = req.body[1]
 
@@ -53,7 +55,7 @@ export const classificarSave = async (req: Request, res: Response) => {
 
                     db.classificarSave(classificar).then(ret => {
 
-                        req.body.opcional = {
+                        /*req.body.opcional = {
                             idEmail: classificar.usuario.email,
                             titulo: 'Classificar Produto',
                             tela: '/classificacao-preencher',
@@ -61,21 +63,75 @@ export const classificarSave = async (req: Request, res: Response) => {
                             descricaoProduto: classificar.produto.descricaoBruta
                         }
 
-                        NotificacoesController.setNotificacaoForm(req, res)
+                        NotificacoesController.setNotificacaoForm(req, res)*/
                     })
                 //})
             })
         }
     });
+
     res.send('200')
 }
 
 export const setClassificar = async (req: Request, res: Response) => {
 
-    let classificar = req.body
+    let classificar:IClassificar = req.body
 
     db.classificarFindByCodigoRemove(classificar).then(ret => {
         db.classificarSave(classificar).then(listdb => {
+
+            let qtd = 0
+
+            if(classificar.classificacao == undefined){
+                qtd = qtd + 2
+            }else{
+                qtd = classificar.classificacao.respostas.length + 2;
+            }
+            
+            sheet.setSpreedsheetEmail( //Email
+                '1XJ6yrnv2cni8irh-cGWhWTYZ0ZPYxAXy9UHOEj3sdU8',
+                'B' + qtd + ':' + 'B' + qtd,
+                [classificar.usuario.email]
+            ).then(item => {
+                /*sheet.setSpreedsheetEmail( //Código
+                    classificar.classificacao.spreadsheetId,
+                    'C' + qtd + ':' + 'C' + qtd,
+                    [classificar.produto._id]
+                ).then(item => {
+                    sheet.setSpreedsheetEmail( //Descricao
+                        classificar.classificacao.spreadsheetId,
+                        'D' + qtd + ':' + 'D' + qtd,
+                        [classificar.produto.descricaoBruta]
+                    ).then(item => {
+                        sheet.setSpreedsheetEmail( //NCM
+                            classificar.classificacao.spreadsheetId,
+                            'E' + qtd + ':' + 'E' + qtd,
+                            [classificar.produto.ncm]
+                        ).then(item => {
+                            sheet.setSpreedsheetEmail( //Pais de Orígem
+                                classificar.classificacao.spreadsheetId,
+                                'F' + qtd + ':' + 'F' + qtd,
+                                [classificar.produto.paisOrigem]
+                            ).then(item => {
+                                sheet.setSpreedsheetEmail( //Fabricante
+                                    classificar.classificacao.spreadsheetId,
+                                    'G' + qtd + ':' + 'G' + qtd,
+                                    [classificar.produto.fabricanteNome]
+                                ).then(item => {
+                                    sheet.setSpreedsheetEmail( //Fornecedor
+                                        classificar.classificacao.spreadsheetId,
+                                        'H' + qtd + ':' + 'H' + qtd,
+                                        [classificar.produto.fornecedorNome]
+                                    ).then(item => {})
+                                })
+                            })
+                        })
+                    })
+                })*/
+            }).catch(error => {
+                console.log(error)
+            })
+
 
             req.body.opcional = {
                 idEmail: classificar.usuario.email,
@@ -116,8 +172,45 @@ export const setClassificarUpdate = async (req: Request, res: Response) => {
     classificar = req.body
 
     db.classificarFindByCodigoRemove(classificar).then(ret => {
-        db.classificarSave(classificar).then(ret2 => {})
+        db.classificarSave(classificar).then(ret2 => {
+
+
+            googleNotes(classificar.classificacao)
+        })
     })
+
+    const googleNotes = async (classificacao:IClassificacao) => {
+
+        classificacao.comentarios.forEach(comentario => {
+            comentario
+        })
+
+        classificacao.respostas.forEach(resposta => {
+            (resposta.idResposta)
+        })
+
+        let parametro: {
+            spreadsheetId:string,
+            sheetId:number, 
+            startRowIndex:number, 
+            endRowIndex:number,
+            startColumnIndex:number,
+            endColumnIndex:number,
+            note:string
+        } = {
+            spreadsheetId: classificacao.spreadsheetId,
+            sheetId: classificacao.idSheet,
+            startRowIndex: 1,
+            endRowIndex: 2,
+            startColumnIndex: 1,
+            endColumnIndex: 2,
+            note: 'Teste de Nota de Email'
+        }
+
+        console.log(parametro)
+
+        sheet.setSpreedsheetNotes(parametro)
+    }
     
     res.send('200')
 }

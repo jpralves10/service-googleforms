@@ -49,10 +49,8 @@ var credentials = {
     private_key: privatekey_1.default.private_key
 };
 var scopes = [
-    'https://www.googleapis.com/auth/forms',
+    //'https://www.googleapis.com/auth/forms',
     'https://www.googleapis.com/auth/spreadsheets',
-    'https://www.googleapis.com/auth/drive',
-    'https://www.googleapis.com/auth/calendar'
 ];
 exports.getGoogleAuth = function () { return __awaiter(_this, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -125,6 +123,8 @@ exports.setSpreedsheetEmail = function (spreadsheetId, range, values) { return _
                 range: 'B2:B4',
                 values: [['jpralves10@gmail.com', 'jean@eficilog.com', 'teste@eficilog.com']]
                 */
+                /*console.log(spreadsheetId, range, values)
+                console.log('Auth', await getGoogleAuth())*/
                 _b = (_a = sheets.spreadsheets.values).batchUpdate;
                 _c = {};
                 return [4 /*yield*/, exports.getGoogleAuth()];
@@ -133,6 +133,8 @@ exports.setSpreedsheetEmail = function (spreadsheetId, range, values) { return _
                 range: 'B2:B4',
                 values: [['jpralves10@gmail.com', 'jean@eficilog.com', 'teste@eficilog.com']]
                 */
+                /*console.log(spreadsheetId, range, values)
+                console.log('Auth', await getGoogleAuth())*/
                 _b.apply(_a, [(_c.auth = _d.sent(),
                         _c.spreadsheetId = spreadsheetId,
                         _c.requestBody = {
@@ -153,17 +155,46 @@ exports.setSpreedsheetEmail = function (spreadsheetId, range, values) { return _
     });
 }); };
 exports.setSpreedsheetNotes = function (parametro) { return __awaiter(_this, void 0, void 0, function () {
-    var spreadsheetId, _a, _b, _c;
+    var _a, _b, _c;
     return __generator(this, function (_d) {
         switch (_d.label) {
             case 0:
-                spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
+                /*
+                range: {
+                    sheetId: 1997890537,
+                    startRowIndex: 1,
+                    endRowIndex: 2,
+                    startColumnIndex: 0,
+                    endColumnIndex: 1
+                },
+                cell: {
+                    note:
+                        'Jean Alves 30/05/2019 13:49 \n "Comentário do campo da sheet" \n --- \n' +
+                        'Jean Eficilog 30/05/2019 14:02 \n "Novos comentário do campo da sheet" \n --- \n'
+                }
+                */
+                //let spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
                 _b = (_a = sheets.spreadsheets).batchUpdate;
                 _c = {};
                 return [4 /*yield*/, exports.getGoogleAuth()];
             case 1:
+                /*
+                range: {
+                    sheetId: 1997890537,
+                    startRowIndex: 1,
+                    endRowIndex: 2,
+                    startColumnIndex: 0,
+                    endColumnIndex: 1
+                },
+                cell: {
+                    note:
+                        'Jean Alves 30/05/2019 13:49 \n "Comentário do campo da sheet" \n --- \n' +
+                        'Jean Eficilog 30/05/2019 14:02 \n "Novos comentário do campo da sheet" \n --- \n'
+                }
+                */
+                //let spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
                 _b.apply(_a, [(_c.auth = _d.sent(),
-                        _c.spreadsheetId = spreadsheetId,
+                        _c.spreadsheetId = parametro.spreadsheetId,
                         _c.requestBody = {
                             includeSpreadsheetInResponse: false,
                             requests: [{

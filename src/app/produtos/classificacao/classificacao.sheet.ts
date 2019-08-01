@@ -12,10 +12,10 @@ const credentials = {
 }
 
 const scopes = [
-    'https://www.googleapis.com/auth/forms',
+    //'https://www.googleapis.com/auth/forms',
     'https://www.googleapis.com/auth/spreadsheets',
-    'https://www.googleapis.com/auth/drive',
-    'https://www.googleapis.com/auth/calendar'
+    //'https://www.googleapis.com/auth/drive',
+    //'https://www.googleapis.com/auth/calendar'
 ]
 
 export const getGoogleAuth = async () => {
@@ -68,6 +68,9 @@ export const setSpreedsheetEmail = async (spreadsheetId:string, range:string, va
     values: [['jpralves10@gmail.com', 'jean@eficilog.com', 'teste@eficilog.com']]
     */
 
+    /*console.log(spreadsheetId, range, values)
+    console.log('Auth', await getGoogleAuth())*/
+
     sheets.spreadsheets.values.batchUpdate({
         auth: await getGoogleAuth(),
         spreadsheetId: spreadsheetId,
@@ -103,11 +106,11 @@ export const setSpreedsheetNotes = async (parametro:any) => {
     }
     */
 
-    let spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
+    //let spreadsheetId = '1PZCLAymlsaBO1GLFPGxjZSONkYGwy-tYBeXyIDibjaQ';
 
     sheets.spreadsheets.batchUpdate({
         auth: await getGoogleAuth(),
-        spreadsheetId: spreadsheetId,
+        spreadsheetId: parametro.spreadsheetId,
         requestBody: {
             includeSpreadsheetInResponse: false,
             requests: [{

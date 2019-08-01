@@ -37,8 +37,6 @@ export interface IProduto {
     /** Informações Declaracao **/
     numeroDI: string;
     dataRegistro: Date;
-    importadorNome: string;
-    importadorNumero: string;
     numeroAdicao: string;
     canal: string;
 
@@ -48,6 +46,14 @@ export interface IProduto {
     /** Versões Produto **/
     versoesProduto: IProduto[];
     compatibilidade: ICompatibilidade;
+
+    /** Dados Importador **/
+    importadorNome: string;
+    importadorNumero: string;
+    
+    /** Dados Operador Estrangeiro **/
+    fornecedorNome: string;
+    fabricanteNome: string;
 
     /** Histórico **/
     dataCriacao: Date;
