@@ -30,7 +30,7 @@ export const classificacaoFindByCodigoRemove = async (classificacao:IClassificac
         console.log(e);
     });
 }
-
+ 
 export const classificacaoFindAll = async () => {
     const col = await classificacaoCollection;
     return await col.find({}).toArray() as IClassificacao[];
