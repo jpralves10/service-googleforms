@@ -1,12 +1,8 @@
 version: '3.4'
-​
 services:
   api:
     image: joseeficilog/crawler-park:catalogo-backend
     restart: always
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     ports:
-      # Porta do express redirecionada para a 8090 do host
       - '5151:8090'
